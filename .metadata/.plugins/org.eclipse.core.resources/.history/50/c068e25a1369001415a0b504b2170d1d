@@ -1,0 +1,69 @@
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JToolBar;
+import java.awt.BorderLayout;
+import javax.swing.JButton;
+import javax.swing.JScrollPane;
+import java.awt.FlowLayout;
+import javax.swing.BoxLayout;
+import javax.swing.SwingConstants;
+import java.awt.Component;
+import java.awt.Color;
+
+
+public class UserInterface {
+
+	private JFrame frmBabyGotBackup;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					UserInterface window = new UserInterface();
+					window.frmBabyGotBackup.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the application.
+	 */
+	public UserInterface() {
+		initialize();
+	}
+
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() {
+		frmBabyGotBackup = new JFrame();
+		frmBabyGotBackup.setBackground(new Color(240, 240, 240));
+		frmBabyGotBackup.setTitle("Baby Got Backup");
+		frmBabyGotBackup.setBounds(100, 100, 450, 100);
+		frmBabyGotBackup.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		JButton restoreButton = new JButton("Restore");
+		frmBabyGotBackup.getContentPane().add(restoreButton);
+		restoreButton.setSize(frmBabyGotBackup.getWidth()/4, frmBabyGotBackup.getHeight());
+		
+		JButton backupButton = new JButton("Backup");
+		frmBabyGotBackup.getContentPane().add(backupButton);
+		backupButton.setSize(frmBabyGotBackup.getWidth()/4, frmBabyGotBackup.getHeight());
+		
+		JButton scheduleButton = new JButton("Schedule");
+		frmBabyGotBackup.getContentPane().add(scheduleButton);
+		scheduleButton.setSize(frmBabyGotBackup.getWidth()/4, frmBabyGotBackup.getHeight());
+		
+		JButton configureButton = new JButton("Configure");
+		frmBabyGotBackup.getContentPane().add(configureButton);
+		configureButton.setSize(frmBabyGotBackup.getWidth()/4, frmBabyGotBackup.getHeight());
+	}
+
+}

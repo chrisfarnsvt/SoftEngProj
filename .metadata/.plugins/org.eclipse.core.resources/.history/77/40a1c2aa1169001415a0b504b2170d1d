@@ -1,0 +1,66 @@
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JToolBar;
+import java.awt.BorderLayout;
+import javax.swing.JButton;
+import javax.swing.JScrollPane;
+import java.awt.FlowLayout;
+import javax.swing.BoxLayout;
+import javax.swing.SwingConstants;
+import java.awt.Component;
+import java.awt.Color;
+
+
+public class UserInterface {
+
+	private JFrame frmBabyGotBackup;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					UserInterface window = new UserInterface();
+					window.frmBabyGotBackup.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the application.
+	 */
+	public UserInterface() {
+		initialize();
+	}
+
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() {
+		frmBabyGotBackup = new JFrame();
+		frmBabyGotBackup.setBackground(new Color(240, 240, 240));
+		frmBabyGotBackup.setTitle("Baby Got Backup");
+		frmBabyGotBackup.setBounds(100, 100, 450, 300);
+		frmBabyGotBackup.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmBabyGotBackup.getContentPane().setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		JButton btnNewButton = new JButton("Restore");
+		frmBabyGotBackup.getContentPane().add(btnNewButton);
+		
+		JButton btnNewButton_1 = new JButton("Backup");
+		frmBabyGotBackup.getContentPane().add(btnNewButton_1);
+		
+		JButton btnNewButton_2 = new JButton("Schedule");
+		frmBabyGotBackup.getContentPane().add(btnNewButton_2);
+		
+		JButton btnNewButton_3 = new JButton("Configure");
+		frmBabyGotBackup.getContentPane().add(btnNewButton_3);
+	}
+
+}

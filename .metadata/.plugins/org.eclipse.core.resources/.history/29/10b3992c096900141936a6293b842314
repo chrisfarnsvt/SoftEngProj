@@ -1,0 +1,14 @@
+import java.util.Vector;
+import java.util.List;
+
+public class ScheduleManager {
+
+  public List<Session> scheduledSessions;
+
+    public Vector  myScheduledSession;
+    public Vector  mySystem;
+
+  public ScheduleManager() {
+  }
+
+}

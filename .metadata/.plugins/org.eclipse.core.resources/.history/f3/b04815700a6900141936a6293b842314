@@ -1,0 +1,16 @@
+import java.util.Vector;
+
+public class SessionID {
+
+  public int sessionID;
+
+      public Vector  myScheduledSession;
+
+  public SessionID getSessionID() {
+  return null;
+  }
+
+  public SessionID() {
+  }
+
+}

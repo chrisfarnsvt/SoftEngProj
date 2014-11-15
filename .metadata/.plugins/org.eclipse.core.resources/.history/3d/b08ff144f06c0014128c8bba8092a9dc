@@ -1,0 +1,95 @@
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.GridLayout;
+
+import javax.swing.ButtonGroup;
+import javax.swing.JFrame;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JRadioButton;
+import javax.swing.JComboBox;
+
+import java.awt.Component;
+
+import javax.swing.JPanel;
+
+import java.awt.FlowLayout;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JCheckBox;
+import java.awt.Font;
+import javax.swing.JTextField;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+
+
+public class BackupDialog {
+
+	private JFrame frame;
+	private String[] intervals = {"hourly", "daily", "weekly"};
+	private JTextField textField;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					BackupDialog window = new BackupDialog();
+					window.frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the application.
+	 */
+	public BackupDialog() {
+		initialize();
+	}
+
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() {
+		frame = new JFrame();
+		frame.setBounds(100, 100, 304, 435);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		ButtonGroup backupType = new ButtonGroup();
+		
+				JRadioButton manualRadio = new JRadioButton("Manual Backup");
+				backupType.add(manualRadio);
+				
+				JRadioButton scheduleRadio = new JRadioButton("Schedule Backup");
+				backupType.add(scheduleRadio);
+				
+				JComboBox<String> comboBox = new JComboBox<String>();
+				
+				JCheckBox encryptCheck = new JCheckBox("Encrypt");
+				
+				JCheckBox compressCheck = new JCheckBox("compress");
+				
+				JLabel lblNewLabel = new JLabel("File Location");
+				lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 13));
+				
+				textField = new JTextField();
+				
+				frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
+				frame.getContentPane().add(manualRadio);
+				frame.getContentPane().add(scheduleRadio);
+				frame.getContentPane().add(comboBox);
+				frame.getContentPane().add(encryptCheck);
+				frame.getContentPane().add(compressCheck);
+				frame.getContentPane().add(lblNewLabel);
+				frame.getContentPane().add(textField);
+		
+	}
+	
+	
+
+}

@@ -1,0 +1,82 @@
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.EventQueue;
+import java.awt.GridLayout;
+
+import javax.swing.ButtonGroup;
+import javax.swing.JFrame;
+import javax.swing.BoxLayout;
+import javax.swing.JLabel;
+import javax.swing.JRadioButton;
+import javax.swing.JComboBox;
+
+import java.awt.Component;
+
+import javax.swing.JPanel;
+
+import java.awt.FlowLayout;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JCheckBox;
+
+
+public class BackupDialog {
+
+	private JFrame frame;
+	private String[] intervals = {"hourly", "daily", "weekly"};
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					BackupDialog window = new BackupDialog();
+					window.frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the application.
+	 */
+	public BackupDialog() {
+		initialize();
+	}
+
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() {
+		frame = new JFrame();
+		frame.setBounds(100, 100, 304, 435);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
+		
+		ButtonGroup backupType = new ButtonGroup();
+		
+				JRadioButton manualRadio = new JRadioButton("Manual Backup");
+				frame.getContentPane().add(manualRadio);
+				backupType.add(manualRadio);
+				
+				JRadioButton scheduleRadio = new JRadioButton("Schedule Backup");
+				frame.getContentPane().add(scheduleRadio);
+				backupType.add(scheduleRadio);
+				
+				JComboBox<String> comboBox = new JComboBox<String>();
+				frame.getContentPane().add(comboBox);
+				
+				JCheckBox encryptCheck = new JCheckBox("Encrypt");
+				frame.getContentPane().add(encryptCheck);
+				
+				JCheckBox compressCheck = new JCheckBox("compress");
+				frame.getContentPane().add(compressCheck);
+		
+	}
+	
+	
+
+}

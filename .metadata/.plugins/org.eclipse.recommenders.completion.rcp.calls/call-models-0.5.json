@@ -1,0 +1,12 @@
+{
+  "C:\\Program Files (x86)\\Java\\jre7\\lib\\rt.jar": {
+    "coordinate": "jre:jre:zip:call:1.0.0",
+    "location": "C:\\Program Files (x86)\\Java\\jre7\\lib\\rt.jar",
+    "status": "RESOLVED"
+  },
+  "C:\\Users\\Colin B\\Desktop\\SoftEngProj\\BabyGotBackup\\src": {
+    "location": "C:\\Users\\Colin B\\Desktop\\SoftEngProj\\BabyGotBackup\\src",
+    "status": "UNRESOLVED",
+    "error": "No class path info available for \u0027C:\\Users\\Colin B\\Desktop\\SoftEngProj\\BabyGotBackup\\src\u0027. Skipped."
+  }
+}

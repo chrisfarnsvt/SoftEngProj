@@ -1,0 +1,20 @@
+import java.util.Vector;
+
+public class ScheduledSession extends Session {
+
+  public int sessionID;
+
+  public Date scheduledBackupTime;
+
+  public Session lastBackupSession;
+
+    public Vector  mySessionID;
+      public Vector  mySessionID;
+  
+  public void setScheduledBackupTime( Date) {
+  }
+
+  public ScheduledSession() {
+  }
+
+}

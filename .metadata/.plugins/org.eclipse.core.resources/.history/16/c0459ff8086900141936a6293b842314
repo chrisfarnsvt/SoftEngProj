@@ -1,0 +1,64 @@
+import java.util.Vector;
+import java.util.List;
+import java.util.Date;
+import java.io.File;
+
+public class Session{
+
+  public List<File> files;
+
+  private int staticSessID;
+
+  public boolean isEncrypted;
+
+  public boolean isCompressed;
+
+  public Date creationDate;
+
+  public Date lastModifiedDate;
+
+  public String backupLocation;
+
+  public Session linkedSess;
+
+      public Vector  myFile;
+      public Vector  mySessionID;
+  
+  public void addFile(File file) {
+  }
+
+  public void removeFile(File file) {
+  }
+
+  public void clearFiles() {
+  }
+
+  public void newOperation() {
+  }
+
+  public Session() {
+  }
+
+  public File pullFile( File) {
+  return null;
+  }
+
+  public File copyFile( File) {
+  return null;
+  }
+
+  public List<File> viewFiles() {
+  return null;
+  }
+
+  public void setBackupLocation( String) {
+  }
+
+  public Session getLinkedSession() {
+  return null;
+  }
+
+  public void setLinkedSession( Session) {
+  }
+
+}

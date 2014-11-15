@@ -1,0 +1,18 @@
+import java.util.Vector;
+import java.io.File;
+
+public class SessionParser {
+
+    public Vector  mySystem;
+
+  public Session parseFrom(File file) {
+  return null;
+  }
+
+  public void writeToFile(Session session) {
+  }
+
+  public SessionParser() {
+  }
+
+}
