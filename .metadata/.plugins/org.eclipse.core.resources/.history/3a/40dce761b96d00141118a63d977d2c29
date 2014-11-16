@@ -1,0 +1,73 @@
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JToolBar;
+import java.awt.BorderLayout;
+import javax.swing.JButton;
+import javax.swing.JScrollPane;
+import java.awt.FlowLayout;
+import javax.swing.BoxLayout;
+import javax.swing.SwingConstants;
+import java.awt.Component;
+import java.awt.Color;
+import java.awt.GridLayout;
+import javax.swing.ImageIcon;
+
+
+public class UserInterface {
+
+	private JFrame frmBabyGotBackup;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					UserInterface window = new UserInterface();
+					window.frmBabyGotBackup.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the application.
+	 */
+	public UserInterface() {
+		initialize();
+	}
+
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() {
+		frmBabyGotBackup = new JFrame();
+		frmBabyGotBackup.setBackground(new Color(240, 240, 240));
+		frmBabyGotBackup.setTitle("Baby Got Backup");
+		frmBabyGotBackup.setBounds(100, 100, 769, 173);
+		frmBabyGotBackup.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmBabyGotBackup.getContentPane().setLayout(new GridLayout(0, 4, 0, 0));
+		
+		JButton backupButton = new JButton("Backup");
+		backupButton.setIcon(new ImageIcon(UserInterface.class.getResource("/images/backup.png")));
+		frmBabyGotBackup.getContentPane().add(backupButton);
+		backupButton.setSize(frmBabyGotBackup.getWidth()/4, frmBabyGotBackup.getHeight());
+		backupButton.setVerticalTextPosition(JButton.BOTTOM);
+		backupButton.setHorizontalTextPosition(JButton.CENTER);
+		
+		JButton restoreButton = new JButton("Restore");
+		restoreButton.setVerticalAlignment(SwingConstants.BOTTOM);
+		frmBabyGotBackup.getContentPane().add(restoreButton);
+		
+		JButton scheduleButton = new JButton("Schedule");
+		frmBabyGotBackup.getContentPane().add(scheduleButton);
+		
+		JButton configureButton = new JButton("Configure");
+		frmBabyGotBackup.getContentPane().add(configureButton);
+	}
+
+}
