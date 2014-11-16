@@ -135,12 +135,6 @@ public class UserInterface implements ActionListener{
 		if(e.getSource() == restoreButton){
 			InfoPane dialog = new InfoPane(frmBabyGotBackup);
 		}
-		if(e.getSource() == scheduleButton){
-			ScheduleDialog dialog = new ScheduleDialog(frmBabyGotBackup);
-		}
-		if(e.getSource() == configureButton){
-			ConfigDialog dialog = new ConfigDialog(frmBabyGotBackup);
-		}
 	}
 
 }
