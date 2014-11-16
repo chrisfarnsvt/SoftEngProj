@@ -50,6 +50,7 @@ public class InfoPane {
 		resPanel.setLayout(new BoxLayout(resPanel, BoxLayout.Y_AXIS));
 		
 		JTextPane resText = new JTextPane();
+		resText.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		resText.setText("Results Go Here");
 		resPanel.add(resText);
 		
