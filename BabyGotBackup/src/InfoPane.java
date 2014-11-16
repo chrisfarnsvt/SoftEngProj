@@ -9,58 +9,44 @@ import java.awt.BorderLayout;
 import javax.swing.JTextPane;
 import javax.swing.border.Border;
 import javax.swing.BoxLayout;
+import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 
 
 public class InfoPane {
 
-	private JFrame frame;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					InfoPane window = new InfoPane();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	private JDialog dialog;
 
 	/**
 	 * Create the application.
 	 */
-	public InfoPane() {
+	public InfoPane(JFrame parent) {
+		dialog =  new JDialog(parent, "Info", true);
 		initialize();
+		dialog.setVisible(true);
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(new BorderLayout(0, 0));
+		dialog.setBounds(100, 100, 450, 300);
+		dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		dialog.getContentPane().setLayout(new BorderLayout(0, 0));
 		
 		JTextPane bUpText = new JTextPane();
 		bUpText.setText("Backup File(s) Affected");
 		bUpText.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-		frame.getContentPane().add(bUpText, BorderLayout.WEST);
+		dialog.getContentPane().add(bUpText, BorderLayout.WEST);
 		
 		JTextPane versionText = new JTextPane();
 		versionText.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 		versionText.setText("Versions\n________\n\nv1\nv2\nv3");
-		frame.getContentPane().add(versionText);
+		dialog.getContentPane().add(versionText);
 		
 		JPanel resPanel = new JPanel();
-		frame.getContentPane().add(resPanel, BorderLayout.EAST);
+		dialog.getContentPane().add(resPanel, BorderLayout.EAST);
 		resPanel.setLayout(new BoxLayout(resPanel, BoxLayout.Y_AXIS));
 		
 		JTextPane resText = new JTextPane();

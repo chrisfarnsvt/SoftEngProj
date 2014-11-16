@@ -132,6 +132,9 @@ public class UserInterface implements ActionListener{
 		if(e.getSource() == backupButton){
 			BackupDialog dialog = new BackupDialog(frmBabyGotBackup);
 		}
+		if(e.getSource() == restoreButton){
+			InfoPane dialog = new InfoPane(frmBabyGotBackup);
+		}
 	}
 
 }
