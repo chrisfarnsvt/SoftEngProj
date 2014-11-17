@@ -1,61 +1,103 @@
+/**
+ * Session.java
+ * BGB
+ */
+package edu.vtc.cis4150;
+
 import java.util.List;
 import java.util.Date;
 import java.io.File;
 
+/**
+ * ScheduledSession - a backup session
+ * @author YOURNAMEHERE
+ */
 public class Session{
 
-  public List<File> files;
+	/**
+	 * create a backup session
+	 */
+	public Session() {
+	}
 
-  private int staticSessID;
+	/**
+	 * add a file to be backed up to the backup file list. if the session
+	 *  has already been backed up this will add the file to the backup
+	 *  location
+	 * @param file the file to be added
+	 */
+	public void addFile(File file) {
+	}
 
-  private boolean isEncrypted;
+	/**
+	 * remove a file from the backup file list, if it exists. if the session
+	 *  has been backed up this will delete the file from the backup location
+	 * @param file the file to be removed
+	 */
+	public void removeFile(File file) {
+	}
 
-  private boolean isCompressed;
+	/**
+	 * clear the backup file list. this will remove any files previously added.
+	 *  if the session has been backed up this will delete the actual files in
+	 *  the backup location
+	 */
+	public void clearFiles() {
+	}
 
-  private Date creationDate;
+	/**
+	 * pull a file from the file list. if the session has been backed
+	 *  up this will also pull the actual file from the backup location
+	 * @param file
+	 * @return the file that was pulled
+	 */
+	public File pullFile(File file) {
+		return null;
+	}
 
-  private Date lastModifiedDate;
+	/**
+	 * copy a file from the file list
+	 * @param file the file to be copied
+	 * @return the copied file
+	 */
+	public File copyFile(File file) {
+		return null;
+	}
 
-  private String backupLocation;
+	/**
+	 * view the files added to the file list
+	 * @return the file list to be viewed
+	 */
+	public List<File> viewFiles() {
+		return null;
+	}
 
-  private Session linkedSess;
+	/**
+	 * set the backup location of the backup session
+	 * @param filepath the backup location of the backup session
+	 */
+	public void setBackupLocation(String filepath) {
+	}
+	
+	/**
+	 * backup the files to the designated backup location. this will be called
+	 *  when the session is being added to the index. if files have been
+	 *  backed up compression, encryption will not change
+	 */
+	public void backupFiles() {
+	}
 
-  
-  public void addFile(File file) {
-  }
-
-  public void removeFile(File file) {
-  }
-
-  public void clearFiles() {
-  }
-
-  public void newOperation() {
-  }
-
-  public Session() {
-  }
-
-  public File pullFile(File file) {
-  return null;
-  }
-
-  public File copyFile(File file) {
-  return null;
-  }
-
-  public List<File> viewFiles() {
-  return null;
-  }
-
-  public void setBackupLocation(String filepath) {
-  }
-
-  public Session getLinkedSession() {
-  return null;
-  }
-
-  public void setLinkedSession(Session session) {
-  }
-
+	/**
+	 * validate rep invariants
+	 */
+	private void repOK() {
+	}
+	
+	private List<File> files; // never null, elements in list never null
+	private boolean isEncrypted; // never null
+	private boolean isCompressed; // never null
+	private Date creationDate; // never null
+	private Date lastModifiedDate; // never null
+	private String backupLocation; // may be null
+	private boolean isBackedUp; // never null
 }

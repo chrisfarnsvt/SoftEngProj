@@ -1,14 +1,30 @@
+/**
+ * ScheduledManager.java
+ * BGB
+ */
+package edu.vtc.cis4150;
 
 import java.util.List;
 
+/**
+ * ScheduleManager - a manager for the session schedules
+ * @author YOURNAMEHERE
+ */
 public class ScheduleManager {
 
-  public List<Session> scheduledSessions;
+	/**
+	 * create the schedule manager
+	 */
+	public ScheduleManager() {
+	}
 
-    public List<Session>  myScheduledSession;
-    public System  mySystem;
+	/**
+	 * validate rep invariants
+	 */
+	private void repOK() {
+	}
 
-  public ScheduleManager() {
-  }
-
+	private List<Session> scheduledSessions; // never null, elements in list never null
+	private System system; // never null
+	private Session linkedSession; // may be null
 }

@@ -1,37 +1,25 @@
+/**
+ * System.java BGB
+ */
+package edu.vtc.cis4150;
 
+/**
+ * System - A backup utility system
+ * @author YOURNAMEHERE
+ */
 public class System {
 
-  public System() {
-  }
+	/**
+	 * create the backup utility system
+	 */
+	public System() {
+	}
 
-  public void browseBySession() {
-  }
-
-  public void browseByFile() {
-  }
-
-  public void browseByDate() {
-  }
-
-  public void archiveSession() 
-  {
-  }
-
-  public void backup() 
-  {
-  }
-
-  public void browseArchivedSession()
-  {
-  }
-
-  public boolean restore(String filepath) 
-  {
-  return false;
-  }
-
-  public boolean restore(Session session) {
-  return false;
-  }
-
+	/**
+	 * validate rep invariants
+	 */
+	private void repOK() {
+	}
+	
+	Index index; // never null
 }
