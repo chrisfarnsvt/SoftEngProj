@@ -1,29 +1,27 @@
 /**
- * ScheduledSession.java
+ * NetworkedSession.java
  * BGB
  */
 package edu.vtc.cis4150;
 
 import java.io.File;
 import java.util.Date;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
- * ScheduledSession - a scheduled backup session
+ * NetworkedSession - a networked backup session
  * @author YOURNAMEHERE
  */
-public class ScheduledSession extends Session {
+public class NetworkedSession extends Session {
 
 	/**
-	 * create a scheduled session
+	 * create a networked session
 	 */
-	public ScheduledSession() {
-		sessionID = ++sessionIDCount;
-		// TODO not finished. Implemented counter so there was no confusion
+	public NetworkedSession() {
 	}
 	
 	/**
-	 * add a file to be backed up to the backup file ArrayList. if the session
+	 * add a file to be backed up to the backup file list. if the session
 	 *  has already been backed up this will add the file to the backup
 	 *  location
 	 * @param file the file to be added
@@ -32,7 +30,7 @@ public class ScheduledSession extends Session {
 	}
 
 	/**
-	 * remove a file from the backup file ArrayList, if it exists. if the session
+	 * remove a file from the backup file list, if it exists. if the session
 	 *  has been backed up this will delete the file from the backup location
 	 * @param file the file to be removed
 	 */
@@ -40,7 +38,7 @@ public class ScheduledSession extends Session {
 	}
 
 	/**
-	 * clear the backup file ArrayList. this will remove any files previously added.
+	 * clear the backup file list. this will remove any files previously added.
 	 *  if the session has been backed up this will delete the actual files in
 	 *  the backup location
 	 */
@@ -48,7 +46,7 @@ public class ScheduledSession extends Session {
 	}
 
 	/**
-	 * pull a file from the file ArrayList. if the session has been backed
+	 * pull a file from the file list. if the session has been backed
 	 *  up this will also pull the actual file from the backup location
 	 * @param file
 	 * @return the file that was pulled
@@ -58,7 +56,7 @@ public class ScheduledSession extends Session {
 	}
 
 	/**
-	 * copy a file from the file ArrayList
+	 * copy a file from the file list
 	 * @param file the file to be copied
 	 * @return the copied file
 	 */
@@ -67,10 +65,10 @@ public class ScheduledSession extends Session {
 	}
 
 	/**
-	 * view the files added to the file ArrayList
-	 * @return the file ArrayList to be viewed
+	 * view the files added to the file list
+	 * @return the file list to be viewed
 	 */
-	public ArrayList<File> viewFiles() {
+	public List<File> viewFiles() {
 		return null;
 	}
 
@@ -88,28 +86,6 @@ public class ScheduledSession extends Session {
 	 */
 	public void backupFiles() {
 	}
-
-	/**
-	 * set the scheduled backup time of the session
-	 * @param date the date in which the next backup will occur
-	 */
-	public void setScheduledBackupTime(Date date) {
-	}
-	
-	/**
-	 * get the last backup session of this schedule
-	 * @return the last backup session
-	 */
-	public Session getLinkedSession() {
-		return null;
-	}
-
-	/**
-	 * set the last backup session of this schedule
-	 * @param session the last backup session
-	 */
-	public void setLinkedSession(Session session) {
-	}
 	
 	/**
 	 * validate rep invariants
@@ -117,11 +93,9 @@ public class ScheduledSession extends Session {
 	private void repOK() {
 	}
 
-	private static int sessionIDCount = 0; // >= 0
-	private int sessionID; // >= 0
-	private Date scheduledBackupTime; // never null, may be <, >, = current time
-	private Session lastBackupSession; // may be null
-	private ArrayList<File> files; // never null, elements in ArrayList never null
+	private String password; // may be null, never empty
+	private String username; // never null, never empty
+	private List<File> files; // never null, elements in list never null
 	private boolean isEncrypted; // never null
 	private boolean isCompressed; // never null
 	private Date creationDate; // never null

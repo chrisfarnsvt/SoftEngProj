@@ -4,7 +4,7 @@
  */
 package edu.vtc.cis4150;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * ScheduleManager - a manager for the session schedules
@@ -24,7 +24,7 @@ public class ScheduleManager {
 	private void repOK() {
 	}
 
-	private ArrayList<Session> scheduledSessions; // never null, elements in ArrayList never null
+	private List<Session> scheduledSessions; // never null, elements in list never null
 	private System system; // never null
 	private Session linkedSession; // may be null
 }

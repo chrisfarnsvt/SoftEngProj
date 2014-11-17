@@ -4,7 +4,7 @@
  */
 package edu.vtc.cis4150;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Index - an index of active and archived sessions
@@ -16,8 +16,6 @@ public class Index{
 	 * create the index
 	 */
 	public Index() {
-		sessions = new ArrayList<Session>();
-		archivedSessions = new ArrayList<Session>();
 	}
 	
 	/**
@@ -25,15 +23,13 @@ public class Index{
 	 * @param session the session to be added
 	 */
 	public void pushSession(Session session) {
-		sessions.add(session);
 	}
 
 	/**
 	 * add a list of sessions to the active list of sessions in the index
 	 * @param sessions the list of sessions to be added
 	 */
-	public void pushSessions(ArrayList<Session> sessions) {
-		sessions.addAll(sessions);
+	public void pushSessions(List<Session> sessions) {
 	}
 
 	/**
@@ -42,7 +38,6 @@ public class Index{
 	 * @param session the session to be transferred
 	 */
 	public void setSessionArchived(Session session) {
-		
 	}
 
 	/**
@@ -50,7 +45,7 @@ public class Index{
 	 *  archived list of sessions
 	 * @param sessions the sessions to be transferred
 	 */
-	public void setSessionsArchived(ArrayList<Session> sessions) {
+	public void setSessionsArchived(List<Session> sessions) {
 	}
 
 	/**
@@ -66,7 +61,7 @@ public class Index{
 	 *  active list of sessions
 	 * @param sessions the sessions to be transferred
 	 */
-	public void setSessionsUnarchived(ArrayList<Session> sessions) {
+	public void setSessionsUnarchived(List<Session> sessions) {
 	}
 
 
@@ -97,7 +92,7 @@ public class Index{
 	 * @param sessions the sessions to be pulled
 	 * @return the pulled sessions
 	 */
-	public ArrayList<Session> getSessions(ArrayList<Session> sessions) {
+	public List<Session> getSessions(List<Session> sessions) {
 		return null;
 	}
 	
@@ -117,7 +112,7 @@ public class Index{
 	 * @param sessions the sessions to be pulled
 	 * @return the pulled sessions
 	 */
-	public ArrayList<Session> getArchivedSessions(ArrayList<Session> sessions) {
+	public List<Session> getArchivedSessions(List<Session> sessions) {
 		return null;
 	}
 
@@ -126,7 +121,7 @@ public class Index{
 	 *  active list
 	 * @return the sessions to be viewed
 	 */
-	public ArrayList<Session> viewSessions() {
+	public List<Session> viewSessions() {
 		return null;
 	}
 	
@@ -135,7 +130,7 @@ public class Index{
 	 *  the archived list of sessions.
 	 * @return the sessions to be viewed
 	 */
-	public ArrayList<Session> viewArchivedSessions() {
+	public List<Session> viewArchivedSessions() {
 		return null;
 	}
 	
@@ -152,6 +147,6 @@ public class Index{
 	private void repOK() {
 	}
 
-	private ArrayList<Session> sessions; // never null, elements in list never null
-	private ArrayList<Session> archivedSessions; // never null, elements in list never null
+	private List<Session> sessions; // never null, elements in list never null
+	private List<Session> archivedSessions; // never null, elements in list never null
 }

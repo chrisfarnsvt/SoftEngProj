@@ -6,7 +6,7 @@ package edu.vtc.cis4150;
 
 import java.io.File;
 import java.util.Date;
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * NetworkedSession - a networked backup session
@@ -21,24 +21,26 @@ public class NetworkedSession extends Session {
 	}
 	
 	/**
-	 * add a file to be backed up to the backup file list. if the session
+	 * add a file to be backed up to the backup file ArrayList. if the session
 	 *  has already been backed up this will add the file to the backup
 	 *  location
 	 * @param file the file to be added
 	 */
 	public void addFile(File file) {
+		files.add(file);
 	}
 
 	/**
-	 * remove a file from the backup file list, if it exists. if the session
+	 * remove a file from the backup file ArrayList, if it exists. if the session
 	 *  has been backed up this will delete the file from the backup location
 	 * @param file the file to be removed
 	 */
 	public void removeFile(File file) {
+		files.remove(file);
 	}
 
 	/**
-	 * clear the backup file list. this will remove any files previously added.
+	 * clear the backup file ArrayList. this will remove any files previously added.
 	 *  if the session has been backed up this will delete the actual files in
 	 *  the backup location
 	 */
@@ -46,7 +48,7 @@ public class NetworkedSession extends Session {
 	}
 
 	/**
-	 * pull a file from the file list. if the session has been backed
+	 * pull a file from the file ArrayList. if the session has been backed
 	 *  up this will also pull the actual file from the backup location
 	 * @param file
 	 * @return the file that was pulled
@@ -56,7 +58,7 @@ public class NetworkedSession extends Session {
 	}
 
 	/**
-	 * copy a file from the file list
+	 * copy a file from the file ArrayList
 	 * @param file the file to be copied
 	 * @return the copied file
 	 */
@@ -65,10 +67,10 @@ public class NetworkedSession extends Session {
 	}
 
 	/**
-	 * view the files added to the file list
-	 * @return the file list to be viewed
+	 * view the files added to the file ArrayList
+	 * @return the file ArrayList to be viewed
 	 */
-	public List<File> viewFiles() {
+	public ArrayList<File> viewFiles() {
 		return null;
 	}
 
@@ -95,7 +97,7 @@ public class NetworkedSession extends Session {
 
 	private String password; // may be null, never empty
 	private String username; // never null, never empty
-	private List<File> files; // never null, elements in list never null
+	private ArrayList<File> files; // never null, elements in ArrayList never null
 	private boolean isEncrypted; // never null
 	private boolean isCompressed; // never null
 	private Date creationDate; // never null

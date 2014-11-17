@@ -33,7 +33,6 @@ public class Index{
 	 * @param sessions the list of sessions to be added
 	 */
 	public void pushSessions(ArrayList<Session> sessions) {
-		sessions.addAll(sessions);
 	}
 
 	/**
@@ -42,7 +41,6 @@ public class Index{
 	 * @param session the session to be transferred
 	 */
 	public void setSessionArchived(Session session) {
-		
 	}
 
 	/**
