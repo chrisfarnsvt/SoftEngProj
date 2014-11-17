@@ -137,12 +137,14 @@ public class BackupDialog implements ActionListener{
 			 final JFileChooser fc = new JFileChooser();
 			 int returnVal = fc.showOpenDialog(backupFrm);
 			 String location = fc.getSelectedFile().getAbsolutePath();
+			 if(location!=null)
 			 fileLocation.setText(location);
 		 }
 		 if(e.getSource() == fileBtn2) {
 			 final JFileChooser fc = new JFileChooser();
 			 int returnVal = fc.showOpenDialog(backupFrm);
 			 String location = fc.getSelectedFile().getAbsolutePath();
+			 if(location!=null)
 			 backupLocation.setText(location);
 		 }
 	}
