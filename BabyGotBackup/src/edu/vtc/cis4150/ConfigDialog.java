@@ -1,0 +1,46 @@
+package edu.vtc.cis4150;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+import javax.swing.BoxLayout;
+
+import java.awt.Component;
+import java.awt.Font;
+
+
+public class ConfigDialog extends JDialog {
+
+	private final JPanel contentPanel = new JPanel();
+
+	/**
+	 * Create the dialog.
+	 */
+	public ConfigDialog(JFrame parent) {
+
+		super(parent, "schedule", false);
+		
+		setBounds(100, 100, 305, 300);
+		getContentPane().setLayout(new BorderLayout());
+		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+		getContentPane().add(contentPanel, BorderLayout.CENTER);
+		contentPanel.setLayout(null);
+		{
+			JLabel lblNewLabel = new JLabel("There will be options here someday");
+			lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 17));
+			lblNewLabel.setBounds(0, 34, 289, 62);
+			lblNewLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+			lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+			contentPanel.add(lblNewLabel);
+		}
+		
+		this.setVisible(true);
+	}
+
+}
