@@ -88,6 +88,11 @@ public class Index{
 	 * @return the pulled session
 	 */
 	public Session getSession(int sessionID) {
+		for(int i = 0; i < sessions.size(); i++){
+			if (sessions.get(i).getSessionID() == sessionID){
+				return sessions.get(i);
+			}
+		}
 		return null;
 	}
 	
@@ -98,7 +103,7 @@ public class Index{
 	 * @return the pulled sessions
 	 */
 	public ArrayList<Session> getSessions(ArrayList<Session> sessions) {
-		return null;
+		return sessions;
 	}
 	
 	/**
