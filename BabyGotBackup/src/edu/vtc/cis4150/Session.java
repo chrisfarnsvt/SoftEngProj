@@ -2,7 +2,7 @@
  * Session.java
  * BGB
  */
-package sep.bgbmobile;
+package edu.vtc.cis4150;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,7 +23,13 @@ public class Session{
 	 */
 	public Session() {
 	}
-
+	
+	/**
+	 * create a backup session including ID
+	 */
+	public Session(int id) {
+		sessID = id;
+	}
 	/**
 	 * add a file to be backed up to the backup file ArrayList. if the session
 	 *  has already been backed up this will add the file to the backup
@@ -67,6 +73,10 @@ public class Session{
 	 *  the backup location
 	 */
 	public void clearFiles() {
+		files.clear();
+		if(isBackedUp){
+			//do the thing
+		}
 	}
 
 	/**
@@ -76,6 +86,9 @@ public class Session{
 	 * @return the file that was pulled
 	 */
 	public File pullFile(File file) {
+		if (files.contains(file)){
+			return files.get(files.indexOf(file));
+		}
 		return null;
 	}
 
@@ -102,6 +115,13 @@ public class Session{
 	 */
 	public void setBackupLocation(String filepath) {
 		backupLocation = filepath;
+	}
+	
+	/**
+	 * 
+	 */
+	public void setSessionID(int id) {
+		sessID = id;
 	}
 	
 	/**
