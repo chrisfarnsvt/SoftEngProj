@@ -2,11 +2,15 @@
  * Session.java
  * BGB
  */
-package edu.vtc.cis4150;
+package sep.bgbmobile;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * ScheduledSession - a backup session
@@ -25,16 +29,36 @@ public class Session{
 	 *  has already been backed up this will add the file to the backup
 	 *  location
 	 * @param file the file to be added
+	 * @throws IOException 
 	 */
-	public void addFile(File file) {
+	public void addFile(File file) throws Exception {
+		files.add(file);
+		if(isBackedUp){
+		/**			FileOutputStream fos = new FileOutputStream(backupLocation + file.getPath() + file.getName());
+					FileInputStream fis = new FileInputStream(file);
+					byte[] b = new byte[32768];
+	    			int n;
+	    			while(( n = fis.read( b )) > 0 ) {
+	    				fos.write( b, 0, n );	
+					}					
+	    			fos.close();
+	    			fis.close();
+		*/}
 	}
 
 	/**
 	 * remove a file from the backup file ArrayList, if it exists. if the session
 	 *  has been backed up this will delete the file from the backup location
 	 * @param file the file to be removed
+	 * @throws Exception 
 	 */
-	public void removeFile(File file) {
+	public void removeFile(File file) throws Exception {
+		files.remove(file);
+		if(isBackedUp){
+			//file = new File(backupLocation + file.getPath() + file.getName());
+			//file.delete();
+		}
+		
 	}
 
 	/**
@@ -77,6 +101,7 @@ public class Session{
 	 * @param filepath the backup location of the backup session
 	 */
 	public void setBackupLocation(String filepath) {
+		backupLocation = filepath;
 	}
 	
 	/**
@@ -85,6 +110,8 @@ public class Session{
 	 *  backed up compression, encryption will not change
 	 */
 	public void backupFiles() {
+		
+		isBackedUp = true;
 	}
 
 	/**
@@ -92,7 +119,7 @@ public class Session{
 	 */
 	private void repOK() {
 	}
-	
+	private int sessID;
 	private ArrayList<File> files; // never null, elements in ArrayList never null
 	private boolean isEncrypted; // never null
 	private boolean isCompressed; // never null
