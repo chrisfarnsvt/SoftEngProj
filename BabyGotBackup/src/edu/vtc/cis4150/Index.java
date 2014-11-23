@@ -88,11 +88,11 @@ public class Index{
 	 * @return the pulled session
 	 */
 	public Session getSession(int sessionID) {
-		for(int i = 0; i < sessions.size(); i++){
+		/*for(int i = 0; i < sessions.size(); i++){
 			if (sessions.get(i).getSessionID() == sessionID){
 				return sessions.get(i);
 			}
-		}
+		}*/
 		return null;
 	}
 	

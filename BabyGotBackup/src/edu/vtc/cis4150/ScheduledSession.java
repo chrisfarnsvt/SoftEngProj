@@ -18,6 +18,7 @@ public class ScheduledSession extends Session {
 	 * create a scheduled session
 	 */
 	public ScheduledSession() {
+		super(false, false); //temp to satisfy eclipse
 		sessionID = ++sessionIDCount;
 		// TODO not finished. Implemented counter so there was no confusion
 	}

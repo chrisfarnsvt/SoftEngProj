@@ -18,6 +18,7 @@ public class NetworkedSession extends Session {
 	 * create a networked session
 	 */
 	public NetworkedSession() {
+		super(false, false); //temp to satisfy Eclipse
 	}
 	
 	/**

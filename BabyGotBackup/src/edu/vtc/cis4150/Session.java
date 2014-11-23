@@ -11,9 +11,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.CopyOption;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
 /**
- * ScheduledSession - a backup session
+ * Session - a backup session
  * @author YOURNAMEHERE
  */
 public class Session{
@@ -21,14 +25,20 @@ public class Session{
 	/**
 	 * create a backup session
 	 */
-	public Session() {
+	public Session(boolean encrypt, boolean compress) {
+		_isEncrypted = encrypt;
+		_isCompressed = compress;
+		_files = new ArrayList<File>();
 	}
 	
 	/**
 	 * create a backup session including ID
 	 */
-	public Session(int id) {
-		sessID = id;
+	public Session(boolean encrypt, boolean compress, int id) {
+		_isEncrypted = encrypt;
+		_isCompressed = compress;
+		_sessID = id;
+		_files = new ArrayList<File>();
 	}
 	/**
 	 * add a file to be backed up to the backup file ArrayList. if the session
@@ -37,19 +47,13 @@ public class Session{
 	 * @param file the file to be added
 	 * @throws IOException 
 	 */
-	public void addFile(File file) throws Exception {
-		files.add(file);
-		if(isBackedUp){
-		/**			FileOutputStream fos = new FileOutputStream(backupLocation + file.getPath() + file.getName());
-					FileInputStream fis = new FileInputStream(file);
-					byte[] b = new byte[32768];
-	    			int n;
-	    			while(( n = fis.read( b )) > 0 ) {
-	    				fos.write( b, 0, n );	
-					}					
-	    			fos.close();
-	    			fis.close();
-		*/}
+	public void addFile(File file) throws IOException {
+		if (_isBackedUp) {
+			//add in checks for compress, encrypt
+			Files.copy(file.toPath(), (new File(_backupLocation)).toPath(), StandardCopyOption.COPY_ATTRIBUTES);
+		}
+		if (!_files.contains(file))
+			_files.add(file);
 	}
 
 	/**
@@ -59,8 +63,8 @@ public class Session{
 	 * @throws Exception 
 	 */
 	public void removeFile(File file) throws Exception {
-		files.remove(file);
-		if(isBackedUp){
+		_files.remove(file);
+		if(_isBackedUp){
 			//file = new File(backupLocation + file.getPath() + file.getName());
 			//file.delete();
 		}
@@ -73,8 +77,8 @@ public class Session{
 	 *  the backup location
 	 */
 	public void clearFiles() {
-		files.clear();
-		if(isBackedUp){
+		_files.clear();
+		if(_isBackedUp){
 			//do the thing
 		}
 	}
@@ -86,14 +90,15 @@ public class Session{
 	 * @return the file that was pulled
 	 */
 	public File pullFile(File file) {
-		if (files.contains(file)){
-			return files.get(files.indexOf(file));
+		if (_files.contains(file)){
+			return _files.get(_files.indexOf(file));
 		}
 		return null;
 	}
 
 	/**
-	 * copy a file from the file ArrayList
+	 * copy a file from the file ArrayList to backup directory.
+	 * This is basically the meat of "backup(file)"
 	 * @param file the file to be copied
 	 * @return the copied file
 	 */
@@ -114,14 +119,14 @@ public class Session{
 	 * @param filepath the backup location of the backup session
 	 */
 	public void setBackupLocation(String filepath) {
-		backupLocation = filepath;
+		_backupLocation = filepath;
 	}
 	
 	/**
 	 * 
 	 */
 	public void setSessionID(int id) {
-		sessID = id;
+		_sessID = id;
 	}
 	
 	/**
@@ -131,7 +136,7 @@ public class Session{
 	 */
 	public void backupFiles() {
 		
-		isBackedUp = true;
+		_isBackedUp = true;
 	}
 
 	/**
@@ -139,12 +144,12 @@ public class Session{
 	 */
 	private void repOK() {
 	}
-	private int sessID;
-	private ArrayList<File> files; // never null, elements in ArrayList never null
-	private boolean isEncrypted; // never null
-	private boolean isCompressed; // never null
-	private Date creationDate; // never null
-	private Date lastModifiedDate; // never null
-	private String backupLocation; // may be null
-	private boolean isBackedUp; // never null
+	private int _sessID;
+	private ArrayList<File> _files; // never null, elements in ArrayList never null
+	private boolean _isEncrypted; // never null
+	private boolean _isCompressed; // never null
+	private Date _creationDate; // never null
+	private Date _lastModifiedDate; // never null
+	private String _backupLocation; // may be null
+	private boolean _isBackedUp; // never null
 }
