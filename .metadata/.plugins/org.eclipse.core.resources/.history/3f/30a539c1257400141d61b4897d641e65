@@ -1,0 +1,21 @@
+package edu.vtc.cis4150;
+
+import java.io.File;
+
+public class BackupTestClass {
+	
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		System backupSystem = new System();
+		
+		File file1 = new File("C:/Users/Allan/Desktop/test1");
+		File file2 = new File("C:/Users/Allan/Desktop/test2");
+		
+		ManualSession session = new ManualSession(false, false);
+		
+		
+	}
+
+}

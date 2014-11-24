@@ -18,7 +18,6 @@ public class ScheduledSession extends Session {
 	 * create a scheduled session
 	 */
 	public ScheduledSession() {
-		super(false, false); //temp to satisfy eclipse
 		sessionID = ++sessionIDCount;
 		// TODO not finished. Implemented counter so there was no confusion
 	}
@@ -40,6 +39,14 @@ public class ScheduledSession extends Session {
 	public void removeFile(File file) {
 	}
 
+	/**
+	 * get the session id of the scheduled session
+	 * @return the session id
+	 */
+	public int getSessionID() {
+		return sessionID;
+	}
+	
 	/**
 	 * clear the backup file ArrayList. this will remove any files previously added.
 	 *  if the session has been backed up this will delete the actual files in

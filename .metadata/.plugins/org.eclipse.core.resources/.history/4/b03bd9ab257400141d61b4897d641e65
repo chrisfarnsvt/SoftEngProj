@@ -1,0 +1,16 @@
+package edu.vtc.cis4150;
+
+import java.io.File;
+
+public class BackupTestClass {
+	
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		File file1 = new File("C:/Users/Allan/Desktop/test1");
+		File file2 = new File("C:/Users/Allan/Desktop/test2");
+		
+	}
+
+}

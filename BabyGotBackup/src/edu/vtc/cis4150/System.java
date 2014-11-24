@@ -13,13 +13,15 @@ public class System {
 	 * create the backup utility system
 	 */
 	public System() {
+		_index = new Index();
 	}
 
 	/**
 	 * validate rep invariants
 	 */
 	private void repOK() {
+		assert (_index != null);
 	}
 	
-	Index index; // never null
+	Index _index; // never null
 }
