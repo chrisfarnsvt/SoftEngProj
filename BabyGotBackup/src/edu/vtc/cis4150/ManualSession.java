@@ -6,6 +6,9 @@ package edu.vtc.cis4150;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -129,13 +132,66 @@ public class ManualSession extends Session{
 	}
 
 	/**
-	 * Compresses a file
+	 * Compresses a file to the backup directory. Compression methods adapted for our use from
+	 * http://www.mkyong.com/java
 	 * @param file the file to compress
-	 * @return the compressed file
 	 */
-	public File compress(File file) {
-		return null;
+	public void compress(File file) {
+		byte[] buffer = new byte[1024];
+		try {
+		   FileOutputStream fos = new FileOutputStream(_backupLocation + file.getPath() + ".zip");
+		    		ZipOutputStream zos = new ZipOutputStream(fos);
+		    		ZipEntry ze= new ZipEntry(file.getName());
+		    		zos.putNextEntry(ze);
+		    		FileInputStream in = new FileInputStream(file.getPath());
+		 
+		    		int len;
+		    		while ((len = in.read(buffer)) > 0) {
+		    			zos.write(buffer, 0, len);
+		    		}
+		    		in.close();
+		    		zos.closeEntry();
+		    		zos.close();
+		    	}
+		    	catch(IOException ex){
+		    	   ex.printStackTrace();
+		    	}
 	}
+	
+	/**
+	 * decompress a file
+	 * @param file the file to restore to
+	 */
+	public void decompress(File file) {
+		     byte[] buffer = new byte[1024];
+		 
+		     try{
+		    	ZipInputStream zis = new ZipInputStream(new FileInputStream(_backupLocation + file.getName() + ".zip"));
+		    	ZipEntry ze = zis.getNextEntry();
+		 
+		    	while(ze!=null){
+		    		File temp = file;
+		    		Files.delete(file.toPath());
+		            FileOutputStream fos = new FileOutputStream(temp);             
+		 
+		            int len;
+		            while ((len = zis.read(buffer)) > 0) {
+		       		fos.write(buffer, 0, len);
+		            }
+		 
+		            fos.close();   
+		            ze = zis.getNextEntry();
+		    	}
+		 
+		        zis.closeEntry();
+		    	zis.close();
+		 
+		 
+		    }
+		    catch(IOException ex) {
+		       ex.printStackTrace(); 
+		    }
+	}    
 	
 	/**
 	 * Encrypts a file
