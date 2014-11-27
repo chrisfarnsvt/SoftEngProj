@@ -136,7 +136,7 @@ public class ManualSession extends Session{
 	 * http://www.mkyong.com/java
 	 * @param file the file to compress
 	 */
-	public void compress(File file) {
+	public File compress(File file) {
 		byte[] buffer = new byte[1024];
 		try {
 		   FileOutputStream fos = new FileOutputStream(_backupLocation + file.getPath() + ".zip");
@@ -152,9 +152,11 @@ public class ManualSession extends Session{
 		    		in.close();
 		    		zos.closeEntry();
 		    		zos.close();
+		    		return file;
 		    	}
 		    	catch(IOException ex){
 		    	   ex.printStackTrace();
+		    	   return null;
 		    	}
 	}
 	
@@ -162,16 +164,15 @@ public class ManualSession extends Session{
 	 * decompress a file
 	 * @param file the file to restore to
 	 */
-	public void decompress(File file) {
+	public File decompress(File file) {
 		     byte[] buffer = new byte[1024];
 		 
 		     try{
 		    	ZipInputStream zis = new ZipInputStream(new FileInputStream(_backupLocation + file.getName() + ".zip"));
 		    	ZipEntry ze = zis.getNextEntry();
+		    	File temp = file;
 		 
 		    	while(ze!=null){
-		    		File temp = file;
-		    		Files.delete(file.toPath());
 		            FileOutputStream fos = new FileOutputStream(temp);             
 		 
 		            int len;
@@ -185,11 +186,12 @@ public class ManualSession extends Session{
 		 
 		        zis.closeEntry();
 		    	zis.close();
-		 
+		    	return file;
 		 
 		    }
 		    catch(IOException ex) {
-		       ex.printStackTrace(); 
+		       ex.printStackTrace();
+		       return null;
 		    }
 	}    
 	
