@@ -6,6 +6,7 @@ package edu.vtc.cis4150;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -18,6 +19,14 @@ import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.security.*;  
+import java.security.spec.KeySpec;
+
+import javax.crypto.*;  
+import javax.crypto.spec.*;  
+
+import java.io.*; 
+
 
 /**
  * Session - a backup session
@@ -35,6 +44,8 @@ public class ManualSession extends Session{
 		_creationDate = curr;
 		_lastModifiedDate = curr;
 		_files = new ArrayList<File>();
+		_resultMap = new HashMap<File, File>();
+		_pass = "bootylicious";
 		repOK();
 	}
 	
@@ -127,9 +138,9 @@ public class ManualSession extends Session{
 	 * This is basically the meat of "backup(file)"
 	 * @param file the file to be copied
 	 * @return the copied file
-	 * @throws IOException 
+	 * @throws Exception 
 	 */
-	public File copyFile(File file) throws IOException {
+	public File copyFile(File file) throws Exception {
 		File temp = null;
 		if (_files.contains(file)) {
 			temp = new File(file.getPath());
@@ -138,7 +149,9 @@ public class ManualSession extends Session{
 			if (_isEncrypted)
 				temp = encrypt(temp);
 			Files.move(temp.toPath(), (new File(_backupLocation + "/" + temp.getName())).toPath(), StandardCopyOption.REPLACE_EXISTING); 
+			File result = new File(_backupLocation + "/" + temp.getName());
 			_lastModifiedDate = new Date();
+			_resultMap.put(result, file);
 			repOK();
 			return temp;
 		}
@@ -182,13 +195,11 @@ public class ManualSession extends Session{
 		     byte[] buffer = new byte[1024];
 		 
 		     try{
-		    	ZipInputStream zis = new ZipInputStream(new FileInputStream(_backupLocation + file.getName() + ".zip"));
+		    	ZipInputStream zis = new ZipInputStream(new FileInputStream(file));
 		    	ZipEntry ze = zis.getNextEntry();
-		    	File temp = file;
-		    	Files.delete(file.toPath());
-		 
+		
 		    	while(ze!=null){
-		            FileOutputStream fos = new FileOutputStream(temp);             
+		            FileOutputStream fos = new FileOutputStream(_backupLocation + "/temp");             
 		 
 		            int len;
 		            while ((len = zis.read(buffer)) > 0) {
@@ -201,7 +212,8 @@ public class ManualSession extends Session{
 		 
 		        zis.closeEntry();
 		    	zis.close();
-		    	return file;
+		    	File result = new File(_backupLocation + "/temp");
+		    	return result;
 		 
 		    }
 		    catch(IOException ex) {
@@ -215,8 +227,94 @@ public class ManualSession extends Session{
 	 * @param file the file to encrypt
 	 * @return the encrypted file
 	 */
-	public File encrypt(File file) {
-		return null;
+	public File encrypt(File file) throws Exception {
+		
+		try{
+			FileInputStream inFile = new FileInputStream(file);
+			FileOutputStream outFile = new FileOutputStream(file.getName() + ".enc");
+			
+			byte[] salt = new byte [8];
+			SecureRandom secureRandom = new SecureRandom();
+			secureRandom.nextBytes(salt);
+			FileOutputStream saltOutFile = new FileOutputStream(file.getName() + "salt.enc");
+			saltOutFile.write(salt);
+			saltOutFile.close();
+			
+			SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+			KeySpec keySpec = new PBEKeySpec(_pass.toCharArray(), salt, 65536, 256);
+			SecretKey secretKey = factory.generateSecret(keySpec);
+			SecretKey secret = new SecretKeySpec(secretKey.getEncoded(), "AES");
+			
+			Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding", "SunJCE");
+			cipher.init(Cipher.ENCRYPT_MODE, secret);
+			
+			byte[] input = new byte[1024];
+			int bytesRead;
+			
+			while ((bytesRead = inFile.read(input)) != -1)
+			{
+				byte[] output = cipher.update(input, 0, bytesRead);
+				if (output != null)
+					outFile.write(output);
+			}
+			
+			byte[] output = cipher.doFinal();
+			if (output != null)
+				outFile.write(output);
+			
+			inFile.close();
+			outFile.flush();
+			outFile.close();
+			
+			return new File(file.getName() + ".enc");
+		}
+		
+		catch(IOException ex) {
+			ex.printStackTrace();
+			return null;
+		}
+	}
+	
+	public File decrypt(File file) throws Exception {
+		
+		try{
+			FileInputStream saltFis = new FileInputStream(file.getName() + "salt.enc");
+			byte[] salt = new byte[8];
+			saltFis.read(salt);
+			saltFis.close();
+	
+			SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+			KeySpec keySpec = new PBEKeySpec(_pass.toCharArray(), salt, 65536,256);
+			SecretKey tmp = factory.generateSecret(keySpec);
+			SecretKey secret = new SecretKeySpec(tmp.getEncoded(), "AES");
+	
+			Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+			cipher.init(Cipher.DECRYPT_MODE, secret);
+			FileInputStream fis = new FileInputStream(file.getName() + ".enc");
+			FileOutputStream fos = new FileOutputStream(file.getName() + ".dec");
+			
+			byte[] in = new byte[1024];
+			int read;
+			while ((read = fis.read(in)) != -1) {
+				byte[] output = cipher.update(in, 0, read);
+				if (output != null)
+					fos.write(output);
+			}
+	
+			byte[] output = cipher.doFinal();
+			if (output != null)
+				fos.write(output);
+			fis.close();
+			fos.flush();
+			fos.close();
+			
+			return new File(file.getName() + ".dec");
+		}
+		catch(IOException ex)
+		{
+			ex.printStackTrace();
+			return null;
+		}
 	}
 	
 	/**
@@ -241,14 +339,48 @@ public class ManualSession extends Session{
 	 * backup the files to the designated backup location. this will be called
 	 *  when the session is being added to the index. if files have been
 	 *  backed up compression, encryption will not change
-	 * @throws IOException 
+	 * @throws Exception 
 	 */
-	public void backupFiles() throws IOException {
+	public void backupFiles() throws Exception {
 		for (File file : _files) {
 			copyFile(file);
 		}
 		_isBackedUp = true;
 		repOK();
+	}
+	
+	/**
+	 * restore the files to the orginal file location. this will be called
+	 *  when the session is being added to the index. if files have been
+	 *  backed up compression, encryption will not change
+	 * @throws Exception 
+	 */
+	public void restoreFiles(ArrayList<File> files) throws Exception {
+		for (File file : files) {
+			if (_resultMap.containsKey(file))
+				restoreFile(file);
+		}
+		repOK();
+	}
+	
+	public String getBackupDirectory() {
+		return _backupLocation;
+	}
+
+	public void restoreFile(File file) throws Exception {
+		if (_resultMap.containsKey(file)) {
+		File location = _resultMap.get(file);
+		if (_files.contains(location)) {
+			File temp = new File(file.getPath());
+			if (_isCompressed)
+				temp = decompress(temp);
+			if (_isEncrypted)
+				temp = decrypt(temp);
+			Files.move(temp.toPath(), location.toPath(), StandardCopyOption.REPLACE_EXISTING); 
+			_lastModifiedDate = new Date();
+			repOK();
+		}
+		}
 	}
 
 	/**
@@ -262,6 +394,8 @@ public class ManualSession extends Session{
 		assert (_lastModifiedDate != null);
 	}
 	
+	private static String _pass;
+	private HashMap<File, File> _resultMap;
 	private ArrayList<File> _files; // never null, elements in ArrayList never null
 	private boolean _isEncrypted; //booleans can't be null in java
 	private boolean _isCompressed;
