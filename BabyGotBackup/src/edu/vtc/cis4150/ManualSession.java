@@ -123,7 +123,7 @@ public class ManualSession extends Session{
 				encrypt(temp);
 			if (_isCompressed)
 				compress(temp);
-			Files.copy(temp.toPath(), (new File(_backupLocation + temp.getName())).toPath(), StandardCopyOption.COPY_ATTRIBUTES); 
+			Files.copy(temp.toPath(), (new File(_backupLocation + "/" + temp.getName())).toPath(), StandardCopyOption.COPY_ATTRIBUTES); 
 			_lastModifiedDate = new Date();
 			repOK();
 			return temp;
@@ -139,7 +139,7 @@ public class ManualSession extends Session{
 	public File compress(File file) {
 		byte[] buffer = new byte[1024];
 		try {
-		   FileOutputStream fos = new FileOutputStream(_backupLocation + file.getPath() + ".zip");
+		   FileOutputStream fos = new FileOutputStream(_backupLocation + "/" + file.getPath() + ".zip");
 		    		ZipOutputStream zos = new ZipOutputStream(fos);
 		    		ZipEntry ze= new ZipEntry(file.getName());
 		    		zos.putNextEntry(ze);
