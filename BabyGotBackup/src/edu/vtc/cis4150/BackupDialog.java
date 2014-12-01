@@ -1,13 +1,9 @@
 package edu.vtc.cis4150;
-import java.awt.Dialog;
-import java.awt.EventQueue;
-
 import javax.swing.ButtonGroup;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.JComboBox;
 import javax.swing.JCheckBox;
@@ -23,11 +19,15 @@ import java.awt.event.ActionListener;
 import javax.swing.DefaultComboBoxModel;
 
 import java.awt.Toolkit;
+import java.io.File;
+import java.io.IOException;
 
 
 public class BackupDialog implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
+	private JFrame parent;
+	private System system;
 	private JDialog backupFrm;
 	private JTextField fileLocation;
 	private JTextField backupLocation;
@@ -37,11 +37,17 @@ public class BackupDialog implements ActionListener{
 	private JRadioButton manualRadio;
 	private JComboBox<String> comboBox;
 	private JButton createBackup;
+	private JCheckBox encryptCheck;
+	private JCheckBox compressCheck;
 
 	/**
 	 * Create the application.
 	 */
-	public BackupDialog(JFrame parent) {
+	public BackupDialog(JFrame parentFrm, System s) {
+		
+		parent  = parentFrm;
+		system = s;
+		
 		backupFrm = new JDialog(parent, "Backup", true);
 		initUI();
 		backupFrm.setVisible(true);
@@ -74,10 +80,10 @@ public class BackupDialog implements ActionListener{
 				comboBox.setModel(new DefaultComboBoxModel(new String[] {"hourly", "daily", "weekly"}));
 				comboBox.setBounds(20, 63, 129, 20);
 				
-				JCheckBox encryptCheck = new JCheckBox("Encrypt");
+				encryptCheck = new JCheckBox("Encrypt");
 				encryptCheck.setBounds(10, 90, 105, 23);
 				
-				JCheckBox compressCheck = new JCheckBox("Compressed");
+				compressCheck = new JCheckBox("Compressed");
 				compressCheck.setBounds(10, 116, 105, 23);
 				
 				JLabel lblNewLabel = new JLabel("File Location");
@@ -104,6 +110,7 @@ public class BackupDialog implements ActionListener{
 				lblBackupLocation.setFont(new Font("Tahoma", Font.PLAIN, 13));
 				lblBackupLocation.setBounds(10, 211, 105, 23);
 				backupFrm.getContentPane().add(lblBackupLocation);
+				
 				
 				backupLocation = new JTextField();
 				backupLocation.setBounds(10, 245, 190, 23);
@@ -142,10 +149,27 @@ public class BackupDialog implements ActionListener{
 		 }
 		 if(e.getSource() == fileBtn2) {
 			 final JFileChooser fc = new JFileChooser();
+			 fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			 fc.setAcceptAllFileFilterUsed(false);
 			 int returnVal = fc.showOpenDialog(backupFrm);
 			 String location = fc.getSelectedFile().getAbsolutePath();
 			 if(location!=null)
 			 backupLocation.setText(location);
+		 }
+		 if (e.getSource() == createBackup) {
+			 //TODO
+			 //Check which radio button is selected, which backup type this is
+			 
+			 ManualSession newSession = new ManualSession(encryptCheck.isSelected(), compressCheck.isSelected());
+			 newSession.setBackupLocation(backupLocation.getText());
+			 //have to catch ioexceptions, for now we will just print a stack trace
+			 try {
+				newSession.addFile(new File(fileLocation.getText()));
+				newSession.backupFiles();
+			 } catch (IOException e1) {
+				e1.printStackTrace();
+			 }
+			system.addSessionToIndex(newSession);
 		 }
 	}
 }

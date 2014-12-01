@@ -39,6 +39,7 @@ import java.awt.event.ActionListener;
 
 public class UserInterface implements ActionListener{
 
+	private System system;
 	private JFrame frmBabyGotBackup;
 	private JButton backupButton;
 	private JButton restoreButton;
@@ -74,9 +75,10 @@ public class UserInterface implements ActionListener{
 	 * Create the application.
 	 */
 	public UserInterface() {
+		system = new System();
 		initialize();
 	}
-
+	
 	/**
 	 * Initialize the contents of the frame.
 	 */
@@ -131,10 +133,10 @@ public class UserInterface implements ActionListener{
 	
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == backupButton){
-			BackupDialog dialog = new BackupDialog(frmBabyGotBackup);
+			BackupDialog dialog = new BackupDialog(frmBabyGotBackup, system);
 		}
 		if(e.getSource() == restoreButton){
-			InfoPane dialog = new InfoPane(frmBabyGotBackup);
+			RestoreDialog dialog = new RestoreDialog(frmBabyGotBackup, system);
 		}
 		if(e.getSource() == scheduleButton){
 			ScheduleDialog dialog = new ScheduleDialog(frmBabyGotBackup);

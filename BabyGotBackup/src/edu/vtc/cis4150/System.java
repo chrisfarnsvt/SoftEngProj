@@ -24,4 +24,14 @@ public class System {
 	}
 	
 	Index _index; // never null
+
+	public void addSessionToIndex(ManualSession newSession) {
+		_index.pushSession(newSession);
+		
+	}
+
+	public Index getIndex() {
+		// TODO Auto-generated method stub
+		return _index;
+	}
 }
