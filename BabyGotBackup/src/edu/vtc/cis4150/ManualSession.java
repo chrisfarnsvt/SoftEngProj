@@ -39,6 +39,20 @@ public class ManualSession extends Session{
 	}
 	
 	/**
+	 * set compression state
+	 */
+	public void setCompressed(boolean comp) {
+		_isCompressed = comp;
+	}
+	
+	/**
+	 * set encryption state
+	 */
+	public void setEncrypted(boolean encrypt) {
+		_isEncrypted = encrypt;
+	}
+	
+	/**
 	 * add a file to be backed up to the backup file ArrayList. if the session
 	 *  has already been backed up this will add the file to the backup
 	 *  location
@@ -119,11 +133,11 @@ public class ManualSession extends Session{
 		File temp = null;
 		if (_files.contains(file)) {
 			temp = new File(file.getPath());
-			if (_isEncrypted)
-				encrypt(temp);
 			if (_isCompressed)
-				compress(temp);
-			Files.copy(temp.toPath(), (new File(_backupLocation + "/" + temp.getName())).toPath(), StandardCopyOption.COPY_ATTRIBUTES); 
+				temp = compress(temp);
+			if (_isEncrypted)
+				temp = encrypt(temp);
+			Files.move(temp.toPath(), (new File(_backupLocation + "/" + temp.getName())).toPath(), StandardCopyOption.REPLACE_EXISTING); 
 			_lastModifiedDate = new Date();
 			repOK();
 			return temp;
@@ -139,7 +153,7 @@ public class ManualSession extends Session{
 	public File compress(File file) {
 		byte[] buffer = new byte[1024];
 		try {
-		   FileOutputStream fos = new FileOutputStream(_backupLocation + "/" + file.getPath() + ".zip");
+		   FileOutputStream fos = new FileOutputStream(file.getPath() + ".zip");
 		    		ZipOutputStream zos = new ZipOutputStream(fos);
 		    		ZipEntry ze= new ZipEntry(file.getName());
 		    		zos.putNextEntry(ze);
@@ -152,7 +166,7 @@ public class ManualSession extends Session{
 		    		in.close();
 		    		zos.closeEntry();
 		    		zos.close();
-		    		return file;
+		    		return new File(file.getPath() + ".zip");
 		    	}
 		    	catch(IOException ex){
 		    	   ex.printStackTrace();
@@ -171,6 +185,7 @@ public class ManualSession extends Session{
 		    	ZipInputStream zis = new ZipInputStream(new FileInputStream(_backupLocation + file.getName() + ".zip"));
 		    	ZipEntry ze = zis.getNextEntry();
 		    	File temp = file;
+		    	Files.delete(file.toPath());
 		 
 		    	while(ze!=null){
 		            FileOutputStream fos = new FileOutputStream(temp);             
