@@ -44,7 +44,8 @@ public class ManualSession extends Session{
 		_creationDate = curr;
 		_lastModifiedDate = curr;
 		_files = new ArrayList<File>();
-		_resultMap = new HashMap<File, File>();
+		_backupToFile = new HashMap<File, File>();
+		_fileToBackup = new HashMap<File, File>();
 		_pass = "bootylicious";
 		repOK();
 	}
@@ -155,11 +156,20 @@ public class ManualSession extends Session{
 			Files.move(temp.toPath(), (new File(_backupLocation + "/" + temp.getName())).toPath(), StandardCopyOption.REPLACE_EXISTING); 
 			File result = new File(_backupLocation + "/" + temp.getName());
 			_lastModifiedDate = new Date();
-			_resultMap.put(result, file);
+			_backupToFile.put(result, file);
+			_fileToBackup.put(file, result);
 			repOK();
 			return temp;
 		}
 		return null;
+	}
+	
+	/**
+	 * get the map of files to their backups
+	 * @return the above map
+	 */
+	public HashMap<File, File> getFileToBackup() {
+		return _fileToBackup;
 	}
 
 	/**
@@ -361,7 +371,7 @@ public class ManualSession extends Session{
 	 */
 	public void restoreFiles(ArrayList<File> files) throws Exception {
 		for (File file : files) {
-			if (_resultMap.containsKey(file))
+			if (_backupToFile.containsKey(file))
 				restoreFile(file);
 		}
 		repOK();
@@ -372,8 +382,8 @@ public class ManualSession extends Session{
 	}
 
 	public void restoreFile(File file) throws Exception {
-		if (_resultMap.containsKey(file)) {
-		File location = _resultMap.get(file);
+		if (_backupToFile.containsKey(file)) {
+		File location = _backupToFile.get(file);
 		if (_files.contains(location)) {
 			File temp = new File(file.getPath());
 			if (_isCompressed)
@@ -399,7 +409,8 @@ public class ManualSession extends Session{
 	}
 	
 	private static String _pass;
-	private HashMap<File, File> _resultMap;
+	private HashMap<File, File> _backupToFile;
+	private HashMap<File, File> _fileToBackup;
 	private ArrayList<File> _files; // never null, elements in ArrayList never null
 	private boolean _isEncrypted; //booleans can't be null in java
 	private boolean _isCompressed;
