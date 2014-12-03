@@ -33,14 +33,11 @@ public class SessionParser {
 	public void parseFrom(BackupSystem sys) throws Exception {
 		Scanner input = new Scanner(new File(_iniLocation));
 		while (input.hasNextLine()) {
-			System.out.println("gets here?");
 			Session session;
 			boolean encrypted = (input.nextLine() == "true");
 			boolean compressed = (input.nextLine() == "true");
 			String type = input.nextLine(); //0 - manual, 1 - scheduled, 2 - networked
-			System.out.println(type);
 			if (type.equals("0")) {
-				System.out.println("gets here too");
 				session = new ManualSession(encrypted, compressed);
 				String backupDir = input.nextLine();
 				session.setBackupLocation(backupDir);

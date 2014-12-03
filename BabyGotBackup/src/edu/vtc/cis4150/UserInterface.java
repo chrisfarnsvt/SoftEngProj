@@ -83,7 +83,6 @@ public class UserInterface implements ActionListener{
 		system = new BackupSystem();
 		File ini = new File(System.getProperty("user.home") + "/backup.ini");
 		if (ini.exists()) {
-			System.out.println("gets here");
 			SessionParser sp = new SessionParser(System.getProperty("user.home") + "/backup.ini");
 			sp.parseFrom(system);
 		}
