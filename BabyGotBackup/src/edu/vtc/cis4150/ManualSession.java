@@ -69,6 +69,14 @@ public class ManualSession extends Session{
 	public void setEncrypted(boolean encrypt) {
 		_isEncrypted = encrypt;
 	}
+	
+	/**
+	 * get backup to file map
+	 * @return above map
+	 */
+	public HashMap<File, File> getBackupToFileMap() {
+		return _backupToFile;
+	}
 
 	/**
 	 * get encryption state
