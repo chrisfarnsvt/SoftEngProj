@@ -117,6 +117,9 @@ public class ManualSession extends Session{
 	/**
 	 * pull a file from the file ArrayList. if the session has been backed
 	 *  up this will also pull the actual file from the backup location
+	 *  
+	 *  NOTE: This isn't actually used. get rid of it later
+	 *  
 	 * @param file
 	 * @return the file that was pulled. returns null if file doesn't exist
 	 * @throws IOException 
@@ -249,10 +252,10 @@ public class ManualSession extends Session{
 			SecretKey secretKey = factory.generateSecret(keySpec);
 			SecretKey secret = new SecretKeySpec(secretKey.getEncoded(), "AES");
 			
-			Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding", "SunJCE");
+			Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding", "SunJCE");
 			cipher.init(Cipher.ENCRYPT_MODE, secret);
 			
-			byte[] input = new byte[1024];
+			byte[] input = new byte[64];
 			int bytesRead;
 			
 			while ((bytesRead = inFile.read(input)) != -1)
@@ -297,7 +300,7 @@ public class ManualSession extends Session{
 			FileInputStream fis = new FileInputStream(file.getName() + ".enc");
 			FileOutputStream fos = new FileOutputStream(file.getName() + ".dec");
 			
-			byte[] in = new byte[1024];
+			byte[] in = new byte[64];
 			int read;
 			while ((read = fis.read(in)) != -1) {
 				byte[] output = cipher.update(in, 0, read);
