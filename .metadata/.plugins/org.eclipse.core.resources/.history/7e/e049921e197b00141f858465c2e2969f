@@ -103,17 +103,17 @@ public class Index{
 	 *  from the active list of sessions
 	 * @param sessionID the session id corresponding to the session to be pulled
 	 * @return the pulled session
-	 
+	 */
 	public Session getSession(int sessionID) {
 		for (Session session : _sessions) {
-			if ((session).getSessionID()) == sessionID) {
+			if (((ScheduledSession)session).getSessionID()) == sessionID) {
 				repOK();
 				return getSession(session);
 			}
 		}
 		repOK();
 		return null;
-	}*/
+	}
 	
 	/**
 	 * get a list of sessions from the active list of sessions using a list of 

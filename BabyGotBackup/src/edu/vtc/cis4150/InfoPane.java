@@ -52,6 +52,7 @@ public class InfoPane implements ActionListener{
 	private JPanel panel;
 	private JButton restoreButton;
 	private int selectedIndex;
+	private JButton deleteButton;
 
 	/**
 	 * Create the application.
@@ -152,16 +153,25 @@ public class InfoPane implements ActionListener{
 		
 		panel = new JPanel();
 		dialog.getContentPane().add(panel);
-		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		panel.setLayout(null);
 		detailsList = new JList<String>(detailsListModel);
 		detailsView = new JScrollPane(detailsList);
+		detailsView.setBounds(0, 0, 151, 239);
 		panel.add(detailsView);
 		
 		restoreButton = new JButton("Restore");
-		restoreButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-		restoreButton.setMaximumSize(new Dimension(150, 25));
+		restoreButton.setBounds(0, 238, 78, 23);
+		restoreButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+		restoreButton.setMaximumSize(new Dimension(75, 25));
 		restoreButton.addActionListener(this);
 		panel.add(restoreButton);
+	
+		deleteButton = new JButton("Delete");
+		deleteButton.setBounds(72, 238, 78, 23);
+		deleteButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+		deleteButton.setMaximumSize(new Dimension(75, 25));
+		deleteButton.addActionListener(this);
+		panel.add(deleteButton);
 		
 	}
 	
@@ -201,20 +211,39 @@ public class InfoPane implements ActionListener{
 		if(e.getSource() == restoreButton) {
 			File curr = getFileFromName(curSelection);
 			for(Session s : index.viewSessions()) {
-				for(File f: ((ManualSession)s).viewFiles())
+				for(File f: ((ManualSession)s).viewFiles()){
+					String ext = "tmp";
+					if(((ManualSession)s).getEncrypted())
+						ext = ".enc";
+					if(((ManualSession)s).getCompressed())
+						ext = ".zip";
 				if ((f.getName()+"tmp").equals(curr.getName()))
 					try {
 						((ManualSession)s).restoreFile(curr);
-						DefaultTreeModel model = (DefaultTreeModel)fileList.getModel();
-						model.removeNodeFromParent((MutableTreeNode)top.getChildAt(selectedIndex));
-						//top.remove(selectedIndex);
-						//JOptionPane.showMessageDialog(null, selectedIndex);
+						JOptionPane.showMessageDialog(null, "Restore Succesful!");
 					} catch (Exception e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
+				}
 			}
 				
+		}
+		if(e.getSource() == deleteButton) {
+			File curr = getFileFromName(curSelection);
+			for(Session s : index.viewSessions()) {
+				for(File f: ((ManualSession)s).viewFiles())
+					if ((f.getName()+"tmp").equals(curr.getName()))
+						try {
+							((ManualSession)s).deleteBackup(f);
+							DefaultTreeModel model = (DefaultTreeModel)fileList.getModel();
+							model.removeNodeFromParent((MutableTreeNode)top.getChildAt(selectedIndex));
+							//top.remove(selectedIndex);
+						} catch (Exception e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+			}
 		}
 		
 	}

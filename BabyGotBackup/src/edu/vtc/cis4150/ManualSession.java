@@ -55,12 +55,26 @@ public class ManualSession extends Session{
 	public void setCompressed(boolean comp) {
 		_isCompressed = comp;
 	}
+
+	/**
+	 * get compressed state
+	 */
+	public boolean getCompressed(){
+		return _isCompressed;
+	}
 	
 	/**
 	 * set encryption state
 	 */
 	public void setEncrypted(boolean encrypt) {
 		_isEncrypted = encrypt;
+	}
+
+	/**
+	 * get encryption state
+	 */
+	public boolean getEncrypted() {
+		return _isEncrypted;
 	}
 	
 	/**
