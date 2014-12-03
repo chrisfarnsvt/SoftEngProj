@@ -45,7 +45,6 @@ public class ManualSession extends Session{
 		_lastModifiedDate = curr;
 		_files = new ArrayList<File>();
 		_backupToFile = new HashMap<File, File>();
-		_fileToBackup = new HashMap<File, File>();
 		_pass = "bootylicious";
 		repOK();
 	}
@@ -157,21 +156,12 @@ public class ManualSession extends Session{
 			File result = new File(_backupLocation + "/" + temp.getName());
 			_lastModifiedDate = new Date();
 			_backupToFile.put(result, file);
-			_fileToBackup.put(file, result);
 			repOK();
 			return temp;
 		}
 		return null;
 	}
 	
-	/**
-	 * get the map of files to their backups
-	 * @return the above map
-	 */
-	public HashMap<File, File> getFileToBackup() {
-		return _fileToBackup;
-	}
-
 	/**
 	 * Compresses a file to the backup directory. Compression methods adapted for our use from
 	 * http://www.mkyong.com/java
@@ -398,6 +388,16 @@ public class ManualSession extends Session{
 	}
 
 	/**
+	 * delete a backup and remove any reference to it from session
+	 * @throws Exception 
+	 */
+	public void deleteBackup(File delete) throws Exception {
+		Files.delete(delete.toPath());
+		_backupToFile.remove(delete);
+		
+	}
+	
+	/**
 	 * validate rep invariants
 	 */
 	private void repOK() {
@@ -410,7 +410,6 @@ public class ManualSession extends Session{
 	
 	private static String _pass;
 	private HashMap<File, File> _backupToFile;
-	private HashMap<File, File> _fileToBackup;
 	private ArrayList<File> _files; // never null, elements in ArrayList never null
 	private boolean _isEncrypted; //booleans can't be null in java
 	private boolean _isCompressed;
