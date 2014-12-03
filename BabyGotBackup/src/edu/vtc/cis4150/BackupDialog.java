@@ -1,9 +1,11 @@
 package edu.vtc.cis4150;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultListModel;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JRadioButton;
 import javax.swing.JComboBox;
 import javax.swing.JCheckBox;
@@ -22,6 +24,8 @@ import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
 
+import javax.swing.JScrollPane;
+
 
 public class BackupDialog implements ActionListener{
 
@@ -39,11 +43,16 @@ public class BackupDialog implements ActionListener{
 	private JButton createBackup;
 	private JCheckBox encryptCheck;
 	private JCheckBox compressCheck;
+	private JButton addFileBtn;
+	private DefaultListModel<String> fileListModel;
+	private ManualSession newSession;
 
 	/**
 	 * Create the application.
 	 */
 	public BackupDialog(JFrame parentFrm, System s) {
+		
+		newSession = new ManualSession(false, false);
 		
 		parent  = parentFrm;
 		system = s;
@@ -59,39 +68,44 @@ public class BackupDialog implements ActionListener{
 	public final void initUI() {
 		backupFrm.setIconImage(Toolkit.getDefaultToolkit().getImage(BackupDialog.class.getResource("/images/hdd1.png")));
 		backupFrm.setTitle("Backup");
-		backupFrm.setBounds(100, 100, 304, 350);
+		backupFrm.setBounds(100, 100, 358, 459);
 		backupFrm.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		backupFrm.setResizable(false);
 		
 				ButtonGroup backupType = new ButtonGroup();
 		
 				manualRadio = new JRadioButton("Manual Backup");
-				manualRadio.setBounds(10, 7, 129, 23);
+				manualRadio.setFont(new Font("SansSerif", Font.PLAIN, 13));
+				manualRadio.setBounds(10, 7, 170, 23);
 				backupType.add(manualRadio);
 				manualRadio.addActionListener(this);
 				
 				scheduleRadio = new JRadioButton("Schedule Backup");
-				scheduleRadio.setBounds(10, 33, 129, 23);
+				scheduleRadio.setFont(new Font("SansSerif", Font.PLAIN, 13));
+				scheduleRadio.setBounds(10, 33, 170, 23);
 				backupType.add(scheduleRadio);
 				scheduleRadio.addActionListener(this);
 				
 				comboBox = new JComboBox<String>();
+				comboBox.setFont(new Font("SansSerif", Font.PLAIN, 11));
 				comboBox.setEnabled(false);
-				comboBox.setModel(new DefaultComboBoxModel(new String[] {"hourly", "daily", "weekly"}));
+				comboBox.setModel(new DefaultComboBoxModel<String>(new String[] {"hourly", "daily", "weekly"}));
 				comboBox.setBounds(20, 63, 129, 20);
 				
 				encryptCheck = new JCheckBox("Encrypt");
+				encryptCheck.setFont(new Font("SansSerif", Font.PLAIN, 13));
 				encryptCheck.setBounds(10, 90, 105, 23);
 				
 				compressCheck = new JCheckBox("Compressed");
+				compressCheck.setFont(new Font("SansSerif", Font.PLAIN, 13));
 				compressCheck.setBounds(10, 116, 105, 23);
 				
 				JLabel lblNewLabel = new JLabel("File Location");
-				lblNewLabel.setBounds(10, 146, 71, 16);
-				lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 13));
+				lblNewLabel.setBounds(10, 335, 129, 16);
+				lblNewLabel.setFont(new Font("SansSerif", Font.PLAIN, 13));
 				
 				fileLocation = new JTextField();
-				fileLocation.setBounds(10, 173, 190, 23);
+				fileLocation.setBounds(10, 362, 190, 23);
 				backupFrm.getContentPane().setLayout(null);
 				backupFrm.getContentPane().add(manualRadio);
 				backupFrm.getContentPane().add(scheduleRadio);
@@ -102,29 +116,48 @@ public class BackupDialog implements ActionListener{
 				backupFrm.getContentPane().add(fileLocation);
 				
 				fileBtn1 = new JButton(" ...");
-				fileBtn1.setBounds(210, 173, 39, 23);
+				fileBtn1.setBounds(210, 362, 39, 23);
 				backupFrm.getContentPane().add(fileBtn1);
 				fileBtn1.addActionListener(this);
 				
 				JLabel lblBackupLocation = new JLabel("Backup Location");
-				lblBackupLocation.setFont(new Font("Tahoma", Font.PLAIN, 13));
-				lblBackupLocation.setBounds(10, 211, 105, 23);
+				lblBackupLocation.setFont(new Font("SansSerif", Font.PLAIN, 13));
+				lblBackupLocation.setBounds(10, 146, 157, 23);
 				backupFrm.getContentPane().add(lblBackupLocation);
 				
+				fileListModel = new DefaultListModel<String>();
+				
+				JScrollPane listView = new JScrollPane();
+				listView.setBounds(10, 234, 258, 90);
+				backupFrm.getContentPane().add(listView);
+				JList<String> fileList = new JList<String>(fileListModel);
+				listView.setViewportView(fileList);
 				
 				backupLocation = new JTextField();
-				backupLocation.setBounds(10, 245, 190, 23);
+				backupLocation.setBounds(10, 180, 190, 23);
 				backupFrm.getContentPane().add(backupLocation);
 				
 				fileBtn2 = new JButton(" ...");
-				fileBtn2.setBounds(210, 245, 39, 23);
+				fileBtn2.setBounds(210, 180, 39, 23);
 				backupFrm.getContentPane().add(fileBtn2);
 				fileBtn2.addActionListener(this);
 				
 				createBackup = new JButton("Create Backup");
-				createBackup.setBounds(83, 282, 129, 23);
+				createBackup.setFont(new Font("SansSerif", Font.PLAIN, 11));
+				createBackup.setBounds(94, 396, 169, 23);
 				backupFrm.getContentPane().add(createBackup);
 				createBackup.addActionListener(this);
+				
+				JLabel lblFiles = new JLabel("Files");
+				lblFiles.setFont(new Font("SansSerif", Font.PLAIN, 13));
+				lblFiles.setBounds(10, 209, 46, 14);
+				backupFrm.getContentPane().add(lblFiles);
+				
+				addFileBtn = new JButton("Add File");
+				addFileBtn.setFont(new Font("SansSerif", Font.PLAIN, 11));
+				addFileBtn.addActionListener(this);
+				addFileBtn.setBounds(257, 362, 71, 23);
+				backupFrm.getContentPane().add(addFileBtn);
 		
 	}
 	
@@ -157,19 +190,25 @@ public class BackupDialog implements ActionListener{
 			 backupLocation.setText(location);
 		 }
 		 if (e.getSource() == createBackup) {
-			 //TODO
-			 //Check which radio button is selected, which backup type this is
-			 
-			 ManualSession newSession = new ManualSession(encryptCheck.isSelected(), compressCheck.isSelected());
 			 newSession.setBackupLocation(backupLocation.getText());
-			 //have to catch ioexceptions, for now we will just print a stack trace
+			 newSession.setCompressed(compressCheck.isSelected());
+			 newSession.setEncrypted(encryptCheck.isSelected());
+			 try {
+				newSession.backupFiles();
+			 } catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			system.addSessionToIndex(newSession);
+		 }
+		 if(e.getSource() == addFileBtn) {
 			 try {
 				newSession.addFile(new File(fileLocation.getText()));
-				newSession.backupFiles();
-			 } catch (IOException e1) {
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
 				e1.printStackTrace();
-			 }
-			system.addSessionToIndex(newSession);
+			}
+			 fileListModel.addElement(fileLocation.getText());
 		 }
 	}
 }

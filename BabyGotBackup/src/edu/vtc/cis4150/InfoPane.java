@@ -4,14 +4,22 @@ import java.awt.Dimension;
 import javax.swing.JFrame;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreeNode;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
@@ -43,6 +51,7 @@ public class InfoPane implements ActionListener{
 	private DefaultListModel<String> detailsListModel;
 	private JPanel panel;
 	private JButton restoreButton;
+	private int selectedIndex;
 
 	/**
 	 * Create the application.
@@ -73,8 +82,6 @@ public class InfoPane implements ActionListener{
 			ArrayList<File> files = ((ManualSession)s).viewFiles();
 			for(File f: files) {
 				top.add(new DefaultMutableTreeNode(f.getName()));
-				//fileNameMap.put(f.getName, value)
-				//add text to version field
 			}
 		}
 	}
@@ -153,24 +160,80 @@ public class InfoPane implements ActionListener{
 		restoreButton = new JButton("Restore");
 		restoreButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 		restoreButton.setMaximumSize(new Dimension(150, 25));
+		restoreButton.addActionListener(this);
 		panel.add(restoreButton);
 		
 	}
 	
 	public void fileListChanged(TreeSelectionEvent tse) {
-		 curSelection = tse.getNewLeadSelectionPath().getLastPathComponent().toString();
-		versionListModel.addElement(curSelection + " v0");
+		versionListModel.removeAllElements();
+		detailsListModel.removeAllElements();
+		versionList.removeAll();
+		detailsList.removeAll();
+		
+		//take no action if the selected node isnt there anymore
+		if(tse.getNewLeadSelectionPath().getLastPathComponent() == null)
+			return;
+		
+		curSelection = tse.getNewLeadSelectionPath().getLastPathComponent().toString();
+		selectedIndex = top.getIndex((TreeNode)tse.getNewLeadSelectionPath().getLastPathComponent());
+		File curr = getFileFromName(curSelection);
+		versionListModel.addElement(curSelection);
 
-		detailsListModel.addElement(curSelection);
-		detailsListModel.addElement("size: 40kb");
-		detailsListModel.addElement("creation date: 11/28/2014");
-		detailsListModel.addElement("Created By: Colin Bates");
+		BasicFileAttributes attr;
+		try {
+			long millis = 3600000;
+			attr = Files.readAttributes(curr.toPath(), BasicFileAttributes.class);
+				/*String ct = String.format("%02d:%02d:%02d", 
+						TimeUnit.MILLISECONDS.toHours(millis),
+						TimeUnit.MILLISECONDS.toMinutes(millis) -  
+						TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)));*/  
+			detailsListModel.addElement(curSelection);
+			detailsListModel.addElement("Backup Size - " + Double.toString(curr.length()/1000) + "kb");
+			detailsListModel.addElement("Backup Created On - " + attr.creationTime().toString());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		}
+
+	//for handling the restore button press
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource() == restoreButton) {
+			File curr = getFileFromName(curSelection);
+			for(Session s : index.viewSessions()) {
+				for(File f: ((ManualSession)s).viewFiles())
+				if ((f.getName()+"tmp").equals(curr.getName()))
+					try {
+						((ManualSession)s).restoreFile(curr);
+						DefaultTreeModel model = (DefaultTreeModel)fileList.getModel();
+						model.removeNodeFromParent((MutableTreeNode)top.getChildAt(selectedIndex));
+						//top.remove(selectedIndex);
+						//JOptionPane.showMessageDialog(null, selectedIndex);
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+			}
+				
+		}
+		
 	}
-
-	public void actionPerformed(ActionEvent arg0) {
-		//the only action that triggers this is the restore button being pressed
-		
-		//we need a way to lookup the backups by name
-		
+	
+	private File getFileFromName(String name) {
+		//right now when the resore button is pressed we traverse every file in every session to find the right file to operate on.
+		//this is probably fixable by using a different data structure (Map?) to maintain sessions
+		//-Colin
+		File ret = null;
+		for (Session s : index.viewSessions()) {
+			for (File f: ((ManualSession)s).viewFiles()){
+				if (f.getName() == name);
+					try {
+						ret = new File(((ManualSession)s).getBackupDirectory() + File.separator + name + "tmp");
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+			}
+		}
+		return ret;
 	}
 }
