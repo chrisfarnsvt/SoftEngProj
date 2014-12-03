@@ -21,5 +21,21 @@ import java.nio.file.StandardCopyOption;
  * @author YOURNAMEHERE
  */
 public abstract class Session{
+
+	public abstract void addFile(File file) throws Exception;
+
+	public abstract void removeFile(File file) throws Exception;
+
+	public abstract void clearFiles() throws Exception;
+
+	public abstract File pullFile(File file) throws Exception;
+
+	public abstract File copyFile(File file) throws Exception;
+
+	public abstract ArrayList<File> viewFiles();
+
+	public abstract void setBackupLocation(String filepath);
+
+	public abstract void backupFiles() throws Exception;
 	
 }

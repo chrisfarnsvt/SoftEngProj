@@ -5,6 +5,7 @@
 package edu.vtc.cis4150;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 import java.util.ArrayList;
 
@@ -12,13 +13,17 @@ import java.util.ArrayList;
  * ScheduledSession - a scheduled backup session
  * @author YOURNAMEHERE
  */
-public class ScheduledSession extends Session {
+public class ScheduledSession{
 
 	/**
 	 * create a scheduled session
 	 */
-	public ScheduledSession() {
-		sessionID = ++sessionIDCount;
+	public ScheduledSession(Session s, Date d) {
+		_session = s;
+		_scheduledBackupTime = d;
+		_sessionID = ++_sessionIDCount;
+		_creationDate = new Date();
+		_lastModifiedDate = _creationDate;
 		// TODO not finished. Implemented counter so there was no confusion
 	}
 	
@@ -27,16 +32,20 @@ public class ScheduledSession extends Session {
 	 *  has already been backed up this will add the file to the backup
 	 *  location
 	 * @param file the file to be added
+	 * @throws Exception 
 	 */
-	public void addFile(File file) {
+	public void addFile(File file) throws Exception {
+		_session.addFile(file);
 	}
 
 	/**
 	 * remove a file from the backup file ArrayList, if it exists. if the session
 	 *  has been backed up this will delete the file from the backup location
 	 * @param file the file to be removed
+	 * @throws Exception 
 	 */
-	public void removeFile(File file) {
+	public void removeFile(File file) throws Exception {
+		_session.removeFile(file);
 	}
 
 	/**
@@ -44,15 +53,17 @@ public class ScheduledSession extends Session {
 	 * @return the session id
 	 */
 	public int getSessionID() {
-		return sessionID;
+		return _sessionID;
 	}
 	
 	/**
 	 * clear the backup file ArrayList. this will remove any files previously added.
 	 *  if the session has been backed up this will delete the actual files in
 	 *  the backup location
+	 * @throws Exception 
 	 */
-	public void clearFiles() {
+	public void clearFiles() throws Exception {
+		_session.clearFiles();
 	}
 
 	/**
@@ -60,18 +71,20 @@ public class ScheduledSession extends Session {
 	 *  up this will also pull the actual file from the backup location
 	 * @param file
 	 * @return the file that was pulled
+	 * @throws Exception 
 	 */
-	public File pullFile(File file) {
-		return null;
+	public File pullFile(File file) throws Exception {
+		return _session.pullFile(file);
 	}
 
 	/**
 	 * copy a file from the file ArrayList
 	 * @param file the file to be copied
 	 * @return the copied file
+	 * @throws Exception 
 	 */
-	public File copyFile(File file) {
-		return null;
+	public File copyFile(File file) throws Exception {
+		return _session.copyFile(file);
 	}
 
 	/**
@@ -79,7 +92,7 @@ public class ScheduledSession extends Session {
 	 * @return the file ArrayList to be viewed
 	 */
 	public ArrayList<File> viewFiles() {
-		return null;
+		return _session.viewFiles();
 	}
 
 	/**
@@ -87,14 +100,17 @@ public class ScheduledSession extends Session {
 	 * @param filepath the backup location of the backup session
 	 */
 	public void setBackupLocation(String filepath) {
+		_session.setBackupLocation(filepath);
 	}
 	
 	/**
 	 * backup the files to the designated backup location. this will be called
 	 *  when the session is being added to the index. if files have been
 	 *  backed up compression, encryption will not change
+	 * @throws Exception 
 	 */
-	public void backupFiles() {
+	public void backupFiles() throws Exception {
+		_session.backupFiles();
 	}
 
 	/**
@@ -102,6 +118,7 @@ public class ScheduledSession extends Session {
 	 * @param date the date in which the next backup will occur
 	 */
 	public void setScheduledBackupTime(Date date) {
+		_scheduledBackupTime = date;
 	}
 	
 	/**
@@ -109,7 +126,7 @@ public class ScheduledSession extends Session {
 	 * @return the last backup session
 	 */
 	public Session getLinkedSession() {
-		return null;
+		return _session;
 	}
 
 	/**
@@ -117,23 +134,24 @@ public class ScheduledSession extends Session {
 	 * @param session the last backup session
 	 */
 	public void setLinkedSession(Session session) {
+		_session = session;
 	}
 	
 	/**
 	 * validate rep invariants
 	 */
 	private void repOK() {
+		assert (_sessionIDCount >= 0);
+		assert (_sessionID >= 0);
+		assert (_scheduledBackupTime != null);
 	}
 
-	private static int sessionIDCount = 0; // >= 0
-	private int sessionID; // >= 0
-	private Date scheduledBackupTime; // never null, may be <, >, = current time
-	private Session lastBackupSession; // may be null
-	private ArrayList<File> files; // never null, elements in ArrayList never null
-	private boolean isEncrypted; // never null
-	private boolean isCompressed; // never null
-	private Date creationDate; // never null
-	private Date lastModifiedDate; // never null
-	private String backupLocation; // may be null
-	private boolean isBackedUp; // never null
+	private Session _session;
+	private static int _sessionIDCount = 0; // >= 0
+	private int _sessionID; // >= 0
+	private Date _scheduledBackupTime; // never null, may be <, >, = current time
+	private Date _creationDate; // never null
+	private Date _lastModifiedDate; // never null
+	private String _backupLocation; // may be null
+	private boolean _isBackedUp; // never null
 }
