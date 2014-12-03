@@ -25,6 +25,6 @@ public class ScheduleManager {
 	}
 
 	private ArrayList<Session> scheduledSessions; // never null, elements in ArrayList never null
-	private System system; // never null
+	private BackupSystem system; // never null
 	private Session linkedSession; // may be null
 }

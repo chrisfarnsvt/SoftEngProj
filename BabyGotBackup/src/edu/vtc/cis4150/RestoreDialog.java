@@ -25,14 +25,14 @@ public class RestoreDialog extends JDialog implements ActionListener{
 	private JButton idButton;
 	private JButton fileButton;
 	private JButton sessionButton;
-	private System system;
+	private BackupSystem system;
 
 	private final JPanel contentPanel = new JPanel();
 
 	/**
 	 * Create the dialog.
 	 */
-	public RestoreDialog(JFrame parent, System s) {
+	public RestoreDialog(JFrame parent, BackupSystem s) {
 		
 		restoreFrm = new JDialog(parent, "Backup", true);
 		system = s;

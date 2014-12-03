@@ -32,7 +32,7 @@ import java.io.*;
  * Session - a backup session
  * @author YOURNAMEHERE
  */
-public class ManualSession extends Session{
+public class ManualSession implements Session{
 
 	/**
 	 * create a backup session
@@ -47,6 +47,10 @@ public class ManualSession extends Session{
 		_backupToFile = new HashMap<File, File>();
 		_pass = "bootylicious";
 		repOK();
+	}
+	
+	public void addBackupMapEntry(File backup, File source) {
+		_backupToFile.put(backup, source);
 	}
 	
 	/**

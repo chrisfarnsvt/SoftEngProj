@@ -31,7 +31,7 @@ public class BackupDialog implements ActionListener{
 
 	private static final long serialVersionUID = 1L;
 	private JFrame parent;
-	private System system;
+	private BackupSystem system;
 	private JDialog backupFrm;
 	private JTextField fileLocation;
 	private JTextField backupLocation;
@@ -50,7 +50,7 @@ public class BackupDialog implements ActionListener{
 	/**
 	 * Create the application.
 	 */
-	public BackupDialog(JFrame parentFrm, System s) {
+	public BackupDialog(JFrame parentFrm, BackupSystem s) {
 		
 		newSession = new ManualSession(false, false);
 		

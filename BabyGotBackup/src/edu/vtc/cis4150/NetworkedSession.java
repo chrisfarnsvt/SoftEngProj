@@ -6,6 +6,7 @@ package edu.vtc.cis4150;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -24,7 +25,7 @@ import java.nio.file.StandardCopyOption;
  * Session - a backup session
  * @author YOURNAMEHERE
  */
-public class NetworkedSession extends Session{
+public class NetworkedSession implements Session{
 
 	/**
 	 * create a backup session
@@ -257,4 +258,33 @@ public class NetworkedSession extends Session{
 	private String _backupLocation; // may be null
 	private boolean _isBackedUp;
 	private SmbHandler _smbHandler;
+	@Override
+	public boolean getCompressed() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean getEncrypted() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public HashMap<File, File> getBackupToFileMap() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getBackupDirectory() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void addBackupMapEntry(File backup, File source) {
+		// TODO Auto-generated method stub
+		
+	}
 }

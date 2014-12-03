@@ -8,12 +8,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * ScheduledSession - a scheduled backup session
  * @author YOURNAMEHERE
  */
-public class ScheduledSession{
+public class ScheduledSession implements Session{
 
 	/**
 	 * create a scheduled session
@@ -154,4 +155,33 @@ public class ScheduledSession{
 	private Date _lastModifiedDate; // never null
 	private String _backupLocation; // may be null
 	private boolean _isBackedUp; // never null
+	@Override
+	public boolean getCompressed() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean getEncrypted() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public HashMap<File, File> getBackupToFileMap() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getBackupDirectory() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void addBackupMapEntry(File backup, File source) {
+		// TODO Auto-generated method stub
+		
+	}
 }
