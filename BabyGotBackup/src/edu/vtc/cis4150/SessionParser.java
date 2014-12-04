@@ -61,7 +61,6 @@ public class SessionParser {
 				//session = new NetworkedSession();
 		}
 		input.close();
-		Files.delete(new File(_iniLocation).toPath());
 	}
 	
 	/**
@@ -70,6 +69,8 @@ public class SessionParser {
 	 * @throws Exception 
 	 */
 	public void writeToFile(Session session) throws Exception {
+		if (new File(_iniLocation).exists())
+			Files.delete((new File (_iniLocation)).toPath());
 		FileOutputStream fos = new FileOutputStream(_iniLocation);
 		BufferedWriter bufw = new BufferedWriter(new OutputStreamWriter(fos));
 		bufw.write("" + session.getEncrypted());
