@@ -39,6 +39,7 @@ public class NetworkedSession implements Session{
 		_creationDate = curr;
 		_lastModifiedDate = curr;
 		_files = new ArrayList<File>();
+		_backupToFile = new HashMap<SmbFile, File>();
 	}
 	
 	/**
@@ -126,10 +127,9 @@ public class NetworkedSession implements Session{
 			if (_isCompressed)
 				compress(temp);
 			_smbHandler.createFile(file); 
-			SmbFile result = new SmbFile(_backupLocation + "/" + temp.getName());
+			SmbFile result = new SmbFile(_backupLocation + temp.getName());
 			_lastModifiedDate = new Date();
-			java.lang.System.out.println(result.getPath().toString());
-			_backupToFile.put(result.getPath().toString(), file);
+			_backupToFile.put(result, file);
 			repOK();
 			return temp;
 		}
@@ -247,7 +247,7 @@ public class NetworkedSession implements Session{
 		
 	public void restoreFile(File file) throws Exception {
 		SmbFile sFile = new SmbFile(_backupLocation+file.getName());
-		if (_backupToFile.containsKey(sFile.getPath().toString())) {
+		if (_backupToFile.containsKey(sFile)) {
 			File location = _backupToFile.get(sFile);
 		if (_files.contains(file)) {
 			File temp = new File(file.getPath());
@@ -260,6 +260,20 @@ public class NetworkedSession implements Session{
 			repOK();
 		}
 		}
+	}
+
+	/**
+	 * restore the files to the orginal file location. this will be called
+	 *  when the session is being added to the index. if files have been
+	 *  backed up compression, encryption will not change
+	 * @throws Exception 
+	 */
+	public void restoreFiles(ArrayList<File> files) throws Exception {
+		for (File file : files) {
+			if (_backupToFile.containsKey(file))
+				restoreFile(file);
+		}
+		repOK();
 	}
 
 	/**
@@ -282,21 +296,7 @@ public class NetworkedSession implements Session{
 	private String _backupLocation; // may be null
 	private boolean _isBackedUp;
 	private SmbHandler _smbHandler;
-	private HashMap<String, File> _backupToFile;
-	
-	/**
-	 * restore the files to the orginal file location. this will be called
-	 *  when the session is being added to the index. if files have been
-	 *  backed up compression, encryption will not change
-	 * @throws Exception 
-	 */
-	public void restoreFiles(ArrayList<File> files) throws Exception {
-		for (File file : files) {
-			if (_backupToFile.containsKey(file))
-				restoreFile(file);
-		}
-		repOK();
-	}
+	private HashMap<SmbFile, File> _backupToFile;
 	
 	@Override
 	public boolean getCompressed() {
