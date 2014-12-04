@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
+import java.nio.file.Path;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
@@ -30,25 +31,6 @@ public class SmbHandler
     }
  
     /**
-     * Returns a LinkedList<String> containing the contents of the given directory
-     * @param path - the directory to list
-     * @return fList - a LinkedLink<String> of the contents of the given directory 
-     * @throws java.lang.Exception
-     */
-    public LinkedList<String> getList(String path) throws Exception
-    {
-        LinkedList<String> fList = new LinkedList<String>();
-        SmbFile f = new SmbFile(path, authentication);
-        SmbFile[] fArr = f.listFiles();        
-        
-        for(int a = 0; a < fArr.length; a++)
-        {
-            fList.add(fArr[a].getName());
-        } 
-        return fList;
-    }
- 
-    /**
      * Does the path exist?
      * @param path
      * @return true if the given path exists, else false
@@ -57,7 +39,6 @@ public class SmbHandler
     public boolean isExist(String path) throws Exception
     {
         SmbFile sFile = new SmbFile(path, authentication);
-        
         return sFile.exists();
     }
  
@@ -71,43 +52,31 @@ public class SmbHandler
     public boolean isDir(String path) throws Exception
     {
         SmbFile sFile = new SmbFile(path, authentication);
- 
         return sFile.isDirectory();
     }
  
     /**
-     * Create a new directory on the Samba Server
-     * @param path the path of the directory
-     * @throws java.lang.Exception
-     */
-    public void createDir(String path) throws Exception
-    {
-       SmbFile sFile = new SmbFile(path, authentication);
-       
-       sFile.mkdir();
-    }
-    
-    /**
-     * create a new file on the Samba Server
-     * @param path - the path of the file
-     * @param content - the file contents
-     * @throws Exception
-     */
-    //!!This function could be less wonky
-    public void createFile(File file) throws Exception
-    {
-    	SmbFile sFile = new SmbFile(smbroot+file.getName(), authentication);
-		FileInputStream   fis  = new FileInputStream(file);
-   	    try {
-   	    	SmbFileOutputStream sfos = new SmbFileOutputStream(sFile);  	     
+	 * create a new file on the Samba Server
+	 * @param path - the path of the file
+	 * @param content - the file contents
+	 * @throws Exception
+	 */
+	//!!This function could be less wonky
+	public void createFile(File file) throws Exception
+	{
+		SmbFile         sFile = new SmbFile(smbroot+file.getName(), authentication);
+		File file2 = new File(file.getPath());
+		FileInputStream fis   = new FileInputStream(file2);
+	    try {
+	    	SmbFileOutputStream sfos = new SmbFileOutputStream(sFile);  	     
 			byte[] b = new byte[32768];
 			int n;
 			while(( n = fis.read( b )) > 0 ) {
 				sfos.write( b, 0, n );	
 			}
 			fis.close();
-   	        sfos.close();
-   	    } catch (SmbException e) {
+	        sfos.close();
+	    } catch (SmbException e) {
 			if (e.getMessage() == "The system cannot find the path specified."){
 				String dir = file.getPath().substring(12, file.getPath().lastIndexOf("/"));	   	    	
 				String dirs[] = dir.split("/");
@@ -126,113 +95,53 @@ public class SmbHandler
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
-    }
- 
-    /**
-     * Create a new session backup on the server
-     * 
-     * @param session - the sessiont o backup
-     * @param root - The root directory of the Samba Share (e.g. "smb://hostname/smb/")
-     * @throws Exception
-     */
-    public void backupSession(Session session) throws Exception{
-    	//smbroot += session.getSessionName()+"/";
-    	if(!(isExist(smbroot))){
-    		createDir(smbroot);
-    	}
-    	//ListIterator<String> i = session.getFileList().listIterator();
-    	
-    	/**while(i.hasNext()){
-    		String filename = i.next();
-    		SmbFile sFile = new SmbFile(smbroot+"/"+filename, authentication);    
-    		if(sFile.isDirectory()){
-    			sFile.mkdir();
-    		}
-    		else{
-    			createFile(filename);
-    		}	    	
-    	}	*/
-    }
-    
-    
-    public void restoreSession(Session session) throws Exception{
-   
-    	//ListIterator<String> i = session.getFileList().listIterator();
-    	/*
-    	while(i.hasNext()){
-    		String filename = i.next();
-    		filename = filename.substring(filename.indexOf("/")+1, filename.length());
-    	
-    	    File oFile = new File(filename, filename);
-    	    if(!(oFile.exists())){
-    	    	oFile.getParentFile().mkdirs();
-        		oFile.createNewFile();
-    	    }
-    		FileOutputStream fos = new FileOutputStream(oFile);
-        	SmbFile sFile = new SmbFile(smbroot+filename, authentication);
-       	    try {
-       	    	SmbFileInputStream sfis = new SmbFileInputStream(sFile);  	     
-    			byte[] b = new byte[32768];
-    			int n;
-    			while(( n = sfis.read( b )) > 0 ) {
-    				fos.write( b, 0, n );	
-    			}
-    			sfis.close();
-       	        fos.close();
-       	    } catch (SmbException e) {}	    	
-    	}	*/
-    }
-    
-    /**
-     * get a file stored on the Samba Server
-     * @param path
-     * @param content
-     * @throws Exception
-     */
-    public SmbFile getSmbFile(String path) throws Exception
-    {
-       SmbFile sFile = new SmbFile(path, authentication);
-       return sFile;
-    }
-    
-    /**
+	}
+
+	/**
+	 * Create a new directory on the Samba Server
+	 * @param path the path of the directory
+	 * @throws java.lang.Exception
+	 */
+	public void createDir(String path) throws Exception
+	{
+	   SmbFile sFile = new SmbFile(path, authentication);
+	
+	   sFile.mkdir();
+	}
+
+	/**
      *
      * @param path
      * @throws java.lang.Exception
      */
-    public void delete(String path) throws Exception
+    public void deleteFile(File file) throws Exception
     {
-        SmbFile sFile = new SmbFile(path, authentication);
+        SmbFile sFile = new SmbFile(smbroot+file.getName(), authentication);
         sFile.delete();
-    }
- 
+    } 
+  
     /**
-     *
-     * @param path
-     * @return
-     * @throws java.lang.Exception
-     */
-    public long size(String path) throws Exception
-    {
-        SmbFile sFile = new SmbFile(path, authentication);
- 
-        return sFile.length();
-    }
- 
-    /**
-     *
-     * @param path
-     * @return
-     * @throws java.lang.Exception
-     */
-    public String getFileName(String path) throws Exception
-    {
-        SmbFile sFile = new SmbFile(path, authentication);
- 
-        return sFile.getName();
-    }
- 
-    /**
+	 * get a file stored on the Samba Server
+	 * @param path
+	 * @param content
+	 * @throws Exception
+	 */
+	public File getFile(Path target, File file) throws Exception
+	{
+		SmbFile sFile = new SmbFile(smbroot+file.getName(), authentication);
+        SmbFileInputStream sfis = new SmbFileInputStream(sFile);
+        FileOutputStream fos = new FileOutputStream(target.toString());
+		byte[] b = new byte[32768];
+		int n;
+		while(( n = sfis.read( b )) > 0 ) {
+			fos.write( b, 0, n );	
+		}
+		sfis.close();
+        fos.close();
+	    return file;
+	}
+
+	/**
      * @return the domain
      */
     public UniAddress getDomain()
