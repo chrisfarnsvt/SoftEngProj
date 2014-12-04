@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
+import java.nio.file.Files;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -60,8 +61,9 @@ public class SessionParser {
 				//session = new NetworkedSession();
 		}
 		input.close();
+		Files.delete(new File(_iniLocation).toPath());
 	}
-
+	
 	/**
 	 * write a session to a file
 	 * @param session the session to be written to a file
