@@ -169,8 +169,10 @@ public class UserInterface implements ActionListener{
 	}
 
 	public void exit() throws Exception {
-		String homedir = System.getProperty("user.home");
-		SessionParser sp = new SessionParser(homedir + "/backup.ini");
+		String iniLocation = System.getProperty("user.home") + "/backup.ini";
+		SessionParser sp = new SessionParser(iniLocation);
+		if (new File(iniLocation).exists())
+			Files.delete((new File (iniLocation)).toPath());
 		for (Session s : system.getIndex().viewSessions())
 			sp.writeToFile(s);
 		System.exit(0);

@@ -8,7 +8,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.util.Map;
 import java.util.Scanner;
@@ -69,30 +71,22 @@ public class SessionParser {
 	 * @throws Exception 
 	 */
 	public void writeToFile(Session session) throws Exception {
-		if (new File(_iniLocation).exists())
-			Files.delete((new File (_iniLocation)).toPath());
-		FileOutputStream fos = new FileOutputStream(_iniLocation);
-		BufferedWriter bufw = new BufferedWriter(new OutputStreamWriter(fos));
-		bufw.write("" + session.getEncrypted());
-		bufw.newLine();
-		bufw.write("" + session.getCompressed());
-		bufw.newLine();
+		PrintWriter bufw = new PrintWriter(new BufferedWriter(new FileWriter(_iniLocation, true)));
+		bufw.write("" + session.getEncrypted() + "\n");
+		bufw.write("" + session.getCompressed() + "\n");
 		if(session instanceof ManualSession)
 			bufw.write("0");
 		if(session instanceof ScheduledSession)
 			bufw.write("1");
 		if(session instanceof NetworkedSession)
 			bufw.write("2");
-		bufw.newLine();
-		bufw.write(session.getBackupDirectory());
-		bufw.newLine();
+		bufw.write("\n");
+		bufw.write(session.getBackupDirectory() + "\n");
 		for (Map.Entry<File, File> fileEnt: session.getBackupToFileMap().entrySet()) { //foreach for a map. messy, but works
-			bufw.write(fileEnt.getKey().getPath());
-			bufw.newLine();
-			bufw.write(fileEnt.getValue().getPath());
-			bufw.newLine();
+			bufw.write(fileEnt.getKey().getPath() + "\n");
+			bufw.write(fileEnt.getValue().getPath() + "\n");
 		}
-		bufw.newLine();
+		bufw.write("\n");
 		bufw.close();
 	}
 	
