@@ -20,6 +20,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
+import jcifs.smb.SmbFile;
+
 
 /**
  * Session - a backup session
@@ -37,7 +39,6 @@ public class NetworkedSession implements Session{
 		_creationDate = curr;
 		_lastModifiedDate = curr;
 		_files = new ArrayList<File>();
-
 	}
 	
 	/**
@@ -67,7 +68,7 @@ public class NetworkedSession implements Session{
 	public void removeFile(File file) throws Exception {
 		_files.remove(file);
 		if(_isBackedUp){
-			_smbHandler.delete(file.toPath().toString());
+			_smbHandler.deleteFile(file);
 		}
 		_lastModifiedDate = new Date();
 		repOK();
@@ -81,7 +82,9 @@ public class NetworkedSession implements Session{
 	 */
 	public void clearFiles() throws Exception {
 		if(_isBackedUp){
-			//delete files
+			for(File file : _files){
+				_smbHandler.deleteFile(file);
+			}
 		}
 		_files.clear();
 		_lastModifiedDate = new Date();
@@ -97,7 +100,7 @@ public class NetworkedSession implements Session{
 	 */
 	public File pullFile(File file) throws Exception {
 		if (_isBackedUp && _files.contains(file))
-			_smbHandler.delete(file.toPath().toString());
+			_smbHandler.deleteFile(file);
 		if (_files.contains(file)) {
 			_files.remove(file);
 			_lastModifiedDate = new Date();
@@ -123,7 +126,10 @@ public class NetworkedSession implements Session{
 			if (_isCompressed)
 				compress(temp);
 			_smbHandler.createFile(file); 
+			SmbFile result = new SmbFile(_backupLocation + "/" + temp.getName());
 			_lastModifiedDate = new Date();
+			java.lang.System.out.println(result.getPath().toString());
+			_backupToFile.put(result.getPath().toString(), file);
 			repOK();
 			return temp;
 		}
@@ -234,6 +240,27 @@ public class NetworkedSession implements Session{
 		_isBackedUp = true;
 		repOK();
 	}
+	
+	public void setAuth(String address, String user, String password) throws Exception{
+		this._smbHandler = new SmbHandler(address, user, password);
+	}
+		
+	public void restoreFile(File file) throws Exception {
+		SmbFile sFile = new SmbFile(_backupLocation+file.getName());
+		if (_backupToFile.containsKey(sFile.getPath().toString())) {
+			File location = _backupToFile.get(sFile);
+		if (_files.contains(file)) {
+			File temp = new File(file.getPath());
+			if (_isCompressed)
+				temp = decompress(temp);
+			if (_isEncrypted)
+				temp = decrypt(temp);
+			_smbHandler.getFile(location.toPath(), file);
+			_lastModifiedDate = new Date();
+			repOK();
+		}
+		}
+	}
 
 	/**
 	 * validate rep invariants
@@ -246,10 +273,7 @@ public class NetworkedSession implements Session{
 		assert (_lastModifiedDate != null);
 	}
 	
-	public void setAuth(String user, String password, String address) throws Exception{
-		_smbHandler = new SmbHandler(address, user, password);
-	}
-	
+
 	private ArrayList<File> _files; // never null, elements in ArrayList never null
 	private boolean _isEncrypted; //booleans can't be null in java
 	private boolean _isCompressed;
@@ -258,6 +282,22 @@ public class NetworkedSession implements Session{
 	private String _backupLocation; // may be null
 	private boolean _isBackedUp;
 	private SmbHandler _smbHandler;
+	private HashMap<String, File> _backupToFile;
+	
+	/**
+	 * restore the files to the orginal file location. this will be called
+	 *  when the session is being added to the index. if files have been
+	 *  backed up compression, encryption will not change
+	 * @throws Exception 
+	 */
+	public void restoreFiles(ArrayList<File> files) throws Exception {
+		for (File file : files) {
+			if (_backupToFile.containsKey(file))
+				restoreFile(file);
+		}
+		repOK();
+	}
+	
 	@Override
 	public boolean getCompressed() {
 		// TODO Auto-generated method stub
@@ -270,21 +310,25 @@ public class NetworkedSession implements Session{
 		return false;
 	}
 
-	@Override
-	public HashMap<File, File> getBackupToFileMap() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public String getBackupDirectory() {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	public File decrypt(File file) throws Exception {
+		return file;
+	}
 
 	@Override
 	public void addBackupMapEntry(File backup, File source) {
 		// TODO Auto-generated method stub
-		
 	}
+
+	@Override
+	public HashMap<File, File> getBackupToFileMap() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
