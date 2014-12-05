@@ -2,7 +2,6 @@ package edu.vtc.cis4150;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
-import javax.swing.JToolBar;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -81,9 +80,9 @@ public class UserInterface implements ActionListener{
 	 */
 	public UserInterface() throws Exception {
 		system = new BackupSystem();
-		File ini = new File(System.getProperty("user.home") + "/backup.ini");
+		File ini = new File(System.getProperty("user.home") + File.separator + "backup.ini");
 		if (ini.exists()) {
-			SessionParser sp = new SessionParser(System.getProperty("user.home") + "/backup.ini");
+			SessionParser sp = new SessionParser(System.getProperty("user.home") + File.separator + "backup.ini");
 			sp.parseFrom(system);
 		}
 		initialize();
@@ -161,20 +160,30 @@ public class UserInterface implements ActionListener{
 			RestoreDialog dialog = new RestoreDialog(frmBabyGotBackup, system);
 		}
 		if(e.getSource() == scheduleButton){
-			ScheduleDialog dialog = new ScheduleDialog(frmBabyGotBackup);
+			ScheduleDialog dialog = new ScheduleDialog(frmBabyGotBackup, system);
 		}
 		if(e.getSource() == configureButton){
-			ConfigDialog dialog = new ConfigDialog(frmBabyGotBackup);
+			ConfigDialog dialog = new ConfigDialog(frmBabyGotBackup, system);
 		}
 	}
 
-	public void exit() throws Exception {
-		String iniLocation = System.getProperty("user.home") + "/backup.ini";
+	public void exit(){
+		String iniLocation = System.getProperty("user.home") + File.separator +"backup.ini";
 		SessionParser sp = new SessionParser(iniLocation);
+		
+		//write the default backup location to the ini file
+		String dbl = system.getDefaultBackupLocation();
+		try {
 		if (new File(iniLocation).exists())
 			Files.delete((new File (iniLocation)).toPath());
+		sp.writeDefaultBackupLocation(dbl);
 		for (Session s : system.getIndex().viewSessions())
 			sp.writeToFile(s);
 		System.exit(0);
+		}
+		catch (Exception e1) {
+			e1.printStackTrace();
+			System.exit(0);
+		}
 	}
 }

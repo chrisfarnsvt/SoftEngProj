@@ -23,7 +23,8 @@ public class BackupSystem {
 		assert (_index != null);
 	}
 	
-	Index _index; // never null
+	private Index _index; // never null
+	private String defaultBackupLocation;
 
 	public void addSessionToIndex(ManualSession newSession) {
 		_index.pushSession(newSession);
@@ -33,5 +34,14 @@ public class BackupSystem {
 	public Index getIndex() {
 		// TODO Auto-generated method stub
 		return _index;
+	}
+
+	public void setDefaultBackupLocation(String text) {
+		defaultBackupLocation = text;
+		
+	}
+	
+	public String getDefaultBackupLocation() {
+		return defaultBackupLocation;
 	}
 }

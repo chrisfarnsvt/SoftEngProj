@@ -1,9 +1,11 @@
 package edu.vtc.cis4150;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.Toolkit;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -13,34 +15,83 @@ import javax.swing.BoxLayout;
 
 import java.awt.Component;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JTextField;
 
 
-public class ConfigDialog extends JDialog {
+public class ConfigDialog extends JDialog implements ActionListener {
 
 	private final JPanel contentPanel = new JPanel();
+	private JTextField textField;
+	private JButton chooseDirectoryButton;
+	private JButton cancel;
+	private JButton okButton;
+	private BackupSystem system;
 
 	/**
 	 * Create the dialog.
 	 */
-	public ConfigDialog(JFrame parent) {
+	public ConfigDialog(JFrame parent, BackupSystem sys) {
 
 		super(parent, "schedule", false);
 		
-		setBounds(100, 100, 305, 300);
+		system = sys;
+		
+		setIconImage(Toolkit.getDefaultToolkit().getImage(BackupDialog.class.getResource("/images/hdd1.png")));
+		setTitle("Configure");
+		
+		setBounds(100, 100, 305, 171);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
-		{
-			JLabel lblNewLabel = new JLabel("There will be options here someday");
-			lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 17));
-			lblNewLabel.setBounds(0, 34, 289, 62);
-			lblNewLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-			lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-			contentPanel.add(lblNewLabel);
-		}
+		
+		JLabel lblDefaultBackupLocation = new JLabel("Default Backup Location");
+		lblDefaultBackupLocation.setBounds(20, 24, 128, 14);
+		contentPanel.add(lblDefaultBackupLocation);
+		
+		textField = new JTextField();
+		textField.setBounds(20, 49, 157, 20);
+		textField.setText(system.getDefaultBackupLocation());
+		contentPanel.add(textField);
+		textField.setColumns(10);
+		
+		okButton = new JButton("OK");
+		okButton.setBounds(83, 86, 89, 23);
+		okButton.addActionListener(this);
+		contentPanel.add(okButton);
+		
+		cancel = new JButton("Cancel");
+		cancel.setBounds(182, 86, 89, 23);
+		cancel.addActionListener(this);
+		contentPanel.add(cancel);
+		
+		chooseDirectoryButton = new JButton("...");
+		chooseDirectoryButton.setBounds(191, 48, 34, 23);
+		chooseDirectoryButton.addActionListener(this);
+		contentPanel.add(chooseDirectoryButton);
 		
 		this.setVisible(true);
 	}
 
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource() == chooseDirectoryButton){
+			 final JFileChooser fc = new JFileChooser();
+			 fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			 fc.setAcceptAllFileFilterUsed(false);
+			 int returnVal = fc.showOpenDialog(contentPanel);
+			 String location = fc.getSelectedFile().getAbsolutePath();
+			textField.setText(location);
+		}
+		if(e.getSource() == okButton){
+				system.setDefaultBackupLocation(textField.getText());
+			this.dispose();
+		}
+		if(e.getSource() == cancel){
+			this.dispose();
+		}
+	}
 }

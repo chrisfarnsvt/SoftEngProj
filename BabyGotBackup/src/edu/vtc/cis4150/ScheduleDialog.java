@@ -25,6 +25,7 @@ import javax.swing.JList;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -36,15 +37,17 @@ import javax.swing.BoxLayout;
 
 public class ScheduleDialog extends JDialog {
 	
-	private ArrayList<ScheduledSession> sessions;
+	private ArrayList<Session> sessions;
 	private JTable backupTable;
 
 	/**
 	 * Create the dialog.
 	 */
-	public ScheduleDialog(JFrame parent) {
+	public ScheduleDialog(JFrame parent, BackupSystem system) {
 		
 		super(parent, "schedule", false);
+		
+		this.setIconImage(Toolkit.getDefaultToolkit().getImage(BackupDialog.class.getResource("/images/hdd1.png")));
 		
 		getContentPane().setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 		
@@ -56,7 +59,9 @@ public class ScheduleDialog extends JDialog {
 		JScrollPane scrollPane = new JScrollPane(backupTable);
 		getContentPane().add(scrollPane);
 		
-		fillTable();
+		sessions = system.getIndex().viewSessions();
+		
+		//fillTable();
 		
 		this.setVisible(true);
 	}
@@ -67,15 +72,14 @@ public class ScheduleDialog extends JDialog {
 		String[] data = {"place", "holder"};
 
 		tm.addRow(data);
-		/*		
-		for(ScheduledSession session: sessions) {
-
-			for(File f: session.backupFiles()) {
+		
+		for(Session session: sessions) {
+			if(Session.instanceOf(ScheduledSession))
+			for(File f: session.viewFiles()) {
 				data[0] = f.getName();
 				data[1] = "Time";
 			}
 		}
-		*/
 	}
 
 }

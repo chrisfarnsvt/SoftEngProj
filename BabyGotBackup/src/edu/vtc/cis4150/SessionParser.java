@@ -35,6 +35,11 @@ public class SessionParser {
 	 */
 	public void parseFrom(BackupSystem sys) throws Exception {
 		Scanner input = new Scanner(new File(_iniLocation));
+		
+		//default backup location is always the first line
+		if(input.hasNextLine())
+			sys.setDefaultBackupLocation(input.nextLine());
+		
 		while (input.hasNextLine()) {
 			Session session;
 			boolean encrypted = (input.nextLine() == "true");
@@ -72,21 +77,21 @@ public class SessionParser {
 	 */
 	public void writeToFile(Session session) throws Exception {
 		PrintWriter bufw = new PrintWriter(new BufferedWriter(new FileWriter(_iniLocation, true)));
-		bufw.write("" + session.getEncrypted() + "\n");
-		bufw.write("" + session.getCompressed() + "\n");
+		bufw.write("" + session.getEncrypted() + eol   );
+		bufw.write("" + session.getCompressed() + eol   );
 		if(session instanceof ManualSession)
 			bufw.write("0");
 		if(session instanceof ScheduledSession)
 			bufw.write("1");
 		if(session instanceof NetworkedSession)
 			bufw.write("2");
-		bufw.write("\n");
-		bufw.write(session.getBackupDirectory() + "\n");
+		bufw.write(eol);
+		bufw.write(session.getBackupDirectory() + eol);
 		for (Map.Entry<File, File> fileEnt: session.getBackupToFileMap().entrySet()) { //foreach for a map. messy, but works
-			bufw.write(fileEnt.getKey().getPath() + "\n");
-			bufw.write(fileEnt.getValue().getPath() + "\n");
+			bufw.write(fileEnt.getKey().getPath() + eol);
+			bufw.write(fileEnt.getValue().getPath() + eol);
 		}
-		bufw.write("\n");
+		bufw.write(eol);
 		bufw.close();
 	}
 	
@@ -97,4 +102,11 @@ public class SessionParser {
 	}
 	
 	private String _iniLocation;
+	private final String eol = System.getProperty("line.separator");
+
+	public void writeDefaultBackupLocation(String dbl) throws Exception{
+		PrintWriter bufw = new PrintWriter(new BufferedWriter(new FileWriter(_iniLocation, true)));
+		bufw.write(dbl + eol);
+		bufw.close();
+	}
 }

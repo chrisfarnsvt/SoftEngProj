@@ -1,10 +1,12 @@
 package edu.vtc.cis4150;
 import java.awt.Dimension;
+import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
@@ -111,6 +113,7 @@ public class InfoPane implements ActionListener{
 	 */
 	private void initialize(int type) {
 		dialog =  new JDialog(dialog, "Info", true);
+		dialog.setIconImage(Toolkit.getDefaultToolkit().getImage(BackupDialog.class.getResource("/images/hdd1.png")));
 		dialog.getContentPane().setLayout(new GridLayout(0, 3, 0, 0));
 		
 		dialog.setBounds(100, 100, 469, 300);
@@ -217,14 +220,16 @@ public class InfoPane implements ActionListener{
 						ext = ".enc";
 					if(((ManualSession)s).getCompressed())
 						ext = ".zip";
-				if ((f.getName()+"tmp").equals(curr.getName()))
+				if ((f.getName()+ext).equals(curr.getName()))
 					try {
 						((ManualSession)s).restoreFile(curr);
-						JOptionPane.showMessageDialog(null, "Restore Succesful!");
+						
 					} catch (Exception e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
+							JOptionPane.showMessageDialog(null, "Restore Failed.");
+							e1.printStackTrace();
+							return;
+						}
+				JOptionPane.showMessageDialog(null, "Restore Succesful!");
 				}
 			}
 				
@@ -257,7 +262,12 @@ public class InfoPane implements ActionListener{
 			for (File f: ((ManualSession)s).viewFiles()){
 				if (f.getName() == name);
 					try {
-						ret = new File(((ManualSession)s).getBackupDirectory() + File.separator + name + "tmp");
+						String ext = "tmp";
+						if(((ManualSession)s).getEncrypted())
+							ext = ".enc";
+						if(((ManualSession)s).getCompressed())
+							ext = ".zip";
+						ret = new File(((ManualSession)s).getBackupDirectory() + File.separator + name + ext);
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}

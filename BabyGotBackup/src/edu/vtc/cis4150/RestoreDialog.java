@@ -53,7 +53,7 @@ public class RestoreDialog extends JDialog implements ActionListener{
 		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		contentPanel.add(lblNewLabel);
 		{
-			idButton = new JButton("ID");
+			idButton = new JButton("Session ID");
 			idButton.setAlignmentY(0.0f);
 			contentPanel.add(idButton);
 			idButton.addActionListener(this);
