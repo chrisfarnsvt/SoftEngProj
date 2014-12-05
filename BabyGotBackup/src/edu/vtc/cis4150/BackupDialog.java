@@ -24,8 +24,12 @@ import javax.swing.DefaultComboBoxModel;
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 
 import javax.swing.JScrollPane;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.TrueFileFilter;
 
 
 public class BackupDialog implements ActionListener{
@@ -228,6 +232,7 @@ public class BackupDialog implements ActionListener{
 		 }
 		 if(e.getSource() == fileBtn1) {
 			 final JFileChooser fc = new JFileChooser();
+			 fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 			 int returnVal = fc.showOpenDialog(backupFrm);
 			 String location = fc.getSelectedFile().getAbsolutePath();
 			 if(location!=null)
@@ -256,12 +261,24 @@ public class BackupDialog implements ActionListener{
 		 }
 		 if(e.getSource() == addFileBtn) {
 			 try {
-				newSession.addFile(new File(fileLocation.getText()));
+				if (new File(fileLocation.getText()).isDirectory()) {
+					Collection<File> files = FileUtils.listFiles(new File(fileLocation.getText()), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
+					for (File file : files) {
+						if (!file.isDirectory()) {
+						newSession.addFile(file);
+						fileListModel.addElement(file.getPath());
+						}
+					}
+				}
+					
+				else {	
+					newSession.addFile(new File(fileLocation.getText()));
+				 	fileListModel.addElement(fileLocation.getText());
+				}
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
-			 fileListModel.addElement(fileLocation.getText());
 		 }
 	}
 }
