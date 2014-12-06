@@ -30,7 +30,10 @@ public class BackupSystem {
 		_index.pushSession(newSession);
 		
 	}
-
+	public void addSessionToIndex(NetworkedSession newSession) {
+		_index.pushSession(newSession);
+		
+	}
 	public Index getIndex() {
 		// TODO Auto-generated method stub
 		return _index;
