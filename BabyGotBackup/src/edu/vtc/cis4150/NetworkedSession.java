@@ -331,4 +331,14 @@ public class NetworkedSession implements Session{
 		return null;
 	}
 
+	public void setCompressed(boolean selected) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setEncrypted(boolean selected) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
