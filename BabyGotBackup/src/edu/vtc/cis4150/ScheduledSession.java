@@ -5,7 +5,6 @@
 package edu.vtc.cis4150;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -181,6 +180,18 @@ public class ScheduledSession implements Session{
 
 	@Override
 	public void addBackupMapEntry(File backup, File source) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setCompressed(boolean selected) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setEncrypted(boolean selected) {
 		// TODO Auto-generated method stub
 		
 	}

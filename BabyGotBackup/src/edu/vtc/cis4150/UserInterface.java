@@ -5,19 +5,8 @@ import javax.swing.JFrame;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import java.awt.BorderLayout;
-
 import javax.swing.JButton;
-import javax.swing.JScrollPane;
-
-import java.awt.FlowLayout;
-
-import javax.swing.BoxLayout;
-import javax.swing.SwingConstants;
-
-import java.awt.Component;
 import java.awt.Color;
-import java.awt.Dialog.ModalityType;
 import java.awt.GridLayout;
 
 import javax.swing.ImageIcon;
@@ -154,16 +143,16 @@ public class UserInterface implements ActionListener{
 	
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == backupButton){
-			BackupDialog dialog = new BackupDialog(frmBabyGotBackup, system);
+			new BackupDialog(frmBabyGotBackup, system);
 		}
 		if(e.getSource() == restoreButton){
-			RestoreDialog dialog = new RestoreDialog(frmBabyGotBackup, system);
+			new RestoreDialog(frmBabyGotBackup, system);
 		}
 		if(e.getSource() == scheduleButton){
-			ScheduleDialog dialog = new ScheduleDialog(frmBabyGotBackup, system);
+			new ScheduleDialog(frmBabyGotBackup, system);
 		}
 		if(e.getSource() == configureButton){
-			ConfigDialog dialog = new ConfigDialog(frmBabyGotBackup, system);
+			new ConfigDialog(frmBabyGotBackup, system);
 		}
 	}
 

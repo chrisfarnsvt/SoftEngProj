@@ -1,0 +1,112 @@
+/**
+ * SessionParser.java
+ * BGB
+ */
+package edu.vtc.cis4150;
+
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.util.Map;
+import java.util.Scanner;
+
+/**
+ * SessionParser - the parser for a stored session
+ * @author YOURNAMEHERE
+ */
+public class SessionParser {
+
+	/**
+	 * create the session parser
+	 */
+	public SessionParser(String ini) {
+		_iniLocation = ini;
+	}
+
+	/**
+	 * parse a session from a file
+	 * @param file the file containing the session to be parsed
+	 * @throws Exception 
+	 */
+	public void parseFrom(BackupSystem sys) throws Exception {
+		Scanner input = new Scanner(new File(_iniLocation));
+		
+		//default backup location is always the first line
+		if(input.hasNextLine())
+			sys.setDefaultBackupLocation(input.nextLine());
+		
+		while (input.hasNextLine()) {
+			Session session;
+			boolean encrypted = (input.nextLine() == "true");
+			boolean compressed = (input.nextLine() == "true");
+			String type = input.nextLine(); //0 - manual, 1 - scheduled, 2 - networked
+			if (type.equals("0")) {
+				session = new ManualSession(encrypted, compressed);
+				String backupDir = input.nextLine();
+				session.setBackupLocation(backupDir);
+				String check = input.nextLine();
+				while (!check.equals("")) {
+					String backup = check;
+					String source = input.nextLine();
+					session.addBackupMapEntry(new File(backup), new File(source));
+					session.addFile(new File(source));
+					if (input.hasNextLine())
+						check = input.nextLine();
+					else 
+						check = "";
+				}
+				sys.getIndex().pushSession(session);
+			}
+			//if (type == "1")
+				//session = new ScheduledSession();
+			//if (type == "2")
+				//session = new NetworkedSession();
+		}
+		input.close();
+	}
+	
+	/**
+	 * write a session to a file
+	 * @param session the session to be written to a file
+	 * @throws Exception 
+	 */
+	public void writeToFile(Session session) throws Exception {
+		PrintWriter bufw = new PrintWriter(new BufferedWriter(new FileWriter(_iniLocation, true)));
+		bufw.write("" + session.getEncrypted() + eol   );
+		bufw.write("" + session.getCompressed() + eol   );
+		if(session instanceof ManualSession)
+			bufw.write("0");
+		if(session instanceof ScheduledSession)
+			bufw.write("1");
+		if(session instanceof NetworkedSession)
+			bufw.write("2");
+		bufw.write(eol);
+		bufw.write(session.getBackupDirectory() + eol);
+		for (Map.Entry<File, File> fileEnt: session.getBackupToFileMap().entrySet()) { //foreach for a map. messy, but works
+			bufw.write(fileEnt.getKey().getPath() + eol);
+			bufw.write(fileEnt.getValue().getPath() + eol);
+		}
+		bufw.write(eol);
+		bufw.close();
+	}
+	
+	/**
+	 * validate rep invariants
+	 */
+	private void repOK() {
+	}
+	
+	private String _iniLocation;
+	private final String eol = System.getProperty("line.separator");
+
+	public void writeDefaultBackupLocation(String dbl) throws Exception{
+		PrintWriter bufw = new PrintWriter(new BufferedWriter(new FileWriter(_iniLocation, true)));
+		bufw.write(dbl + eol);
+		bufw.close();
+	}
+}

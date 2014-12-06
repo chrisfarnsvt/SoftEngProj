@@ -1,35 +1,11 @@
 package edu.vtc.cis4150;
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-
-import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.JTable;
-import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
-import javax.swing.JLabel;
-
-import java.awt.Font;
-import java.awt.GridLayout;
-
-import javax.swing.SwingConstants;
-
-import java.awt.Component;
-
-import javax.swing.Box;
-import javax.swing.JList;
-
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
 import java.awt.Toolkit;
 import java.io.File;
 import java.util.ArrayList;
-
-import net.miginfocom.swing.MigLayout;
 
 import javax.swing.JScrollPane;
 import javax.swing.BoxLayout;
@@ -37,6 +13,7 @@ import javax.swing.BoxLayout;
 
 public class ScheduleDialog extends JDialog {
 	
+	private static final long serialVersionUID = 2497764586856976834L;
 	private ArrayList<Session> sessions;
 	private JTable backupTable;
 
@@ -74,7 +51,7 @@ public class ScheduleDialog extends JDialog {
 		tm.addRow(data);
 		
 		for(Session session: sessions) {
-			if(Session.instanceOf(ScheduledSession))
+			if(session instanceof ScheduledSession)
 			for(File f: session.viewFiles()) {
 				data[0] = f.getName();
 				data[1] = "Time";

@@ -23,7 +23,6 @@ import javax.swing.DefaultComboBoxModel;
 
 import java.awt.Toolkit;
 import java.io.File;
-import java.io.IOException;
 import java.util.Collection;
 
 import javax.swing.JScrollPane;
@@ -51,20 +50,18 @@ public class BackupDialog implements ActionListener{
 	private JButton addFileBtn;
 	private DefaultListModel<String> fileListModel;
 	//private ManualSession newSession;
-	private NetworkedSession newSession;
+	private Session newSession;
 	private JTextField password;
 	private JTextField username;
 	private JRadioButton sambaRadio;
 	private JLabel lblUserName;
 	private JLabel lblPassword;
+	private JLabel lblBackupLocation;
 
 	/**
 	 * Create the application.
 	 */
 	public BackupDialog(JFrame parentFrm, BackupSystem s) {
-		
-		//newSession = new ManualSession(false, false);
-		newSession = new NetworkedSession(false, false);
 		
 		parent  = parentFrm;
 		system = s;
@@ -84,125 +81,130 @@ public class BackupDialog implements ActionListener{
 		backupFrm.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		backupFrm.setResizable(false);
 		
-				ButtonGroup backupType = new ButtonGroup();
+		ButtonGroup backupType = new ButtonGroup();
 		
-				manualRadio = new JRadioButton("Manual Backup");
-				manualRadio.setFont(new Font("SansSerif", Font.PLAIN, 13));
-				manualRadio.setBounds(10, 7, 170, 23);
-				backupType.add(manualRadio);
-				manualRadio.addActionListener(this);
+		manualRadio = new JRadioButton("Manual Backup");
+		manualRadio.setFont(new Font("SansSerif", Font.PLAIN, 13));
+		manualRadio.setBounds(10, 7, 170, 23);
+		backupType.add(manualRadio);
+		manualRadio.setToolTipText("A one time backup.");
+		manualRadio.addActionListener(this);
 				
-				scheduleRadio = new JRadioButton("Schedule Backup");
-				scheduleRadio.setFont(new Font("SansSerif", Font.PLAIN, 13));
-				scheduleRadio.setBounds(10, 33, 170, 23);
-				backupType.add(scheduleRadio);
-				scheduleRadio.addActionListener(this);
+		scheduleRadio = new JRadioButton("Schedule Backup");
+		scheduleRadio.setFont(new Font("SansSerif", Font.PLAIN, 13));
+		scheduleRadio.setBounds(10, 33, 170, 23);
+		backupType.add(scheduleRadio);
+		scheduleRadio.setToolTipText("A Backup will occur at the selected interval");
+		scheduleRadio.addActionListener(this);
 				
-				sambaRadio = new JRadioButton("Samba Backup");
-				sambaRadio.setFont(new Font("SansSerif", Font.PLAIN, 13));
-				sambaRadio.setBounds(10, 90, 157, 23);
-				backupType.add(sambaRadio);
-				sambaRadio.addActionListener(this);
+		sambaRadio = new JRadioButton("Samba Backup");
+		sambaRadio.setFont(new Font("SansSerif", Font.PLAIN, 13));
+		sambaRadio.setBounds(10, 90, 157, 23);
+		backupType.add(sambaRadio);
+		sambaRadio.setToolTipText("A backup to an external samba server.");
+		sambaRadio.addActionListener(this);
 				
-				comboBox = new JComboBox<String>();
-				comboBox.setFont(new Font("SansSerif", Font.PLAIN, 11));
-				comboBox.setEnabled(false);
-				comboBox.setModel(new DefaultComboBoxModel<String>(new String[] {"hourly", "daily", "weekly"}));
-				comboBox.setBounds(20, 63, 129, 20);
+		comboBox = new JComboBox<String>();
+		comboBox.setFont(new Font("SansSerif", Font.PLAIN, 11));
+		comboBox.setEnabled(false);
+		comboBox.setModel(new DefaultComboBoxModel<String>(new String[] {"hourly", "daily", "weekly"}));
+		comboBox.setBounds(20, 63, 129, 20);
 				
-				encryptCheck = new JCheckBox("Encrypt");
-				encryptCheck.setFont(new Font("SansSerif", Font.PLAIN, 13));
-				encryptCheck.setBounds(10, 173, 105, 23);
+		encryptCheck = new JCheckBox("Encrypt");
+		encryptCheck.setFont(new Font("SansSerif", Font.PLAIN, 13));
+		encryptCheck.setBounds(10, 173, 105, 23);
 				
-				compressCheck = new JCheckBox("Compressed");
-				compressCheck.setFont(new Font("SansSerif", Font.PLAIN, 13));
-				compressCheck.setBounds(10, 199, 105, 23);
+		compressCheck = new JCheckBox("Compressed");
+		compressCheck.setFont(new Font("SansSerif", Font.PLAIN, 13));
+		compressCheck.setBounds(10, 199, 105, 23);
 				
-				JLabel lblNewLabel = new JLabel("File Location");
-				lblNewLabel.setBounds(10, 236, 129, 16);
-				lblNewLabel.setFont(new Font("SansSerif", Font.PLAIN, 13));
+		JLabel lblNewLabel = new JLabel("File Location");
+		lblNewLabel.setBounds(10, 236, 129, 16);
+		lblNewLabel.setFont(new Font("SansSerif", Font.PLAIN, 13));
 				
-				fileLocation = new JTextField();
-				fileLocation.setBounds(10, 263, 190, 23);
-				backupFrm.getContentPane().setLayout(null);
-				backupFrm.getContentPane().add(manualRadio);
-				backupFrm.getContentPane().add(scheduleRadio);
-				backupFrm.getContentPane().add(sambaRadio);
+		fileLocation = new JTextField();
+		fileLocation.setBounds(10, 263, 190, 23);
+		backupFrm.getContentPane().setLayout(null);
+		backupFrm.getContentPane().add(manualRadio);
+		backupFrm.getContentPane().add(scheduleRadio);
+		backupFrm.getContentPane().add(sambaRadio);
 				
-				backupFrm.getContentPane().add(comboBox);
-				backupFrm.getContentPane().add(encryptCheck);
-				backupFrm.getContentPane().add(compressCheck);
-				backupFrm.getContentPane().add(lblNewLabel);
-				backupFrm.getContentPane().add(fileLocation);
+		backupFrm.getContentPane().add(comboBox);
+		backupFrm.getContentPane().add(encryptCheck);
+		backupFrm.getContentPane().add(compressCheck);
+		backupFrm.getContentPane().add(lblNewLabel);
+		backupFrm.getContentPane().add(fileLocation);
 				
-				fileBtn1 = new JButton(" ...");
-				fileBtn1.setBounds(210, 263, 39, 23);
-				backupFrm.getContentPane().add(fileBtn1);
-				fileBtn1.addActionListener(this);
+		fileBtn1 = new JButton(" ...");
+		fileBtn1.setBounds(210, 263, 39, 23);
+		backupFrm.getContentPane().add(fileBtn1);
+		fileBtn1.addActionListener(this);
 				
-				JLabel lblBackupLocation = new JLabel("Backup Location");
-				lblBackupLocation.setFont(new Font("SansSerif", Font.PLAIN, 13));
-				lblBackupLocation.setBounds(10, 423, 157, 23);
-				backupFrm.getContentPane().add(lblBackupLocation);
+		lblBackupLocation = new JLabel("Backup Location");
+		lblBackupLocation.setFont(new Font("SansSerif", Font.PLAIN, 13));
+		lblBackupLocation.setBounds(10, 423, 157, 23);
+		backupFrm.getContentPane().add(lblBackupLocation);
 				
-				fileListModel = new DefaultListModel<String>();
+		fileListModel = new DefaultListModel<String>();
 				
-				JScrollPane listView = new JScrollPane();
-				listView.setBounds(10, 322, 258, 90);
-				backupFrm.getContentPane().add(listView);
-				JList<String> fileList = new JList<String>(fileListModel);
-				listView.setViewportView(fileList);
+		JScrollPane listView = new JScrollPane();
+		listView.setBounds(10, 322, 258, 90);
+		backupFrm.getContentPane().add(listView);
+		JList<String> fileList = new JList<String>(fileListModel);
+		listView.setViewportView(fileList);
 				
-				backupLocation = new JTextField();
-				backupLocation.setText(system.getDefaultBackupLocation());
-				backupLocation.setBounds(10, 450, 190, 23);
-				backupFrm.getContentPane().add(backupLocation);
+		backupLocation = new JTextField();
+		backupLocation.setText(system.getDefaultBackupLocation());
+		backupLocation.setBounds(10, 450, 190, 23);
+		backupFrm.getContentPane().add(backupLocation);
 				
-				fileBtn2 = new JButton(" ...");
-				fileBtn2.setBounds(210, 450, 39, 23);
-				backupFrm.getContentPane().add(fileBtn2);
-				fileBtn2.addActionListener(this);
+		fileBtn2 = new JButton(" ...");
+		fileBtn2.setBounds(210, 450, 39, 23);
+		backupFrm.getContentPane().add(fileBtn2);
+		fileBtn2.addActionListener(this);
 				
-				createBackup = new JButton("Create Backup");
-				createBackup.setFont(new Font("SansSerif", Font.PLAIN, 11));
-				createBackup.setBounds(90, 511, 169, 23);
-				backupFrm.getContentPane().add(createBackup);
-				createBackup.addActionListener(this);
+		createBackup = new JButton("Create Backup");
+		createBackup.setFont(new Font("SansSerif", Font.PLAIN, 11));
+		createBackup.setBounds(90, 511, 169, 23);
+		backupFrm.getContentPane().add(createBackup);
+		createBackup.addActionListener(this);
 				
-				JLabel lblFiles = new JLabel("Files");
-				lblFiles.setFont(new Font("SansSerif", Font.PLAIN, 13));
-				lblFiles.setBounds(10, 297, 46, 14);
-				backupFrm.getContentPane().add(lblFiles);
+		JLabel lblFiles = new JLabel("Files");
+		lblFiles.setFont(new Font("SansSerif", Font.PLAIN, 13));
+		lblFiles.setBounds(10, 297, 46, 14);
+		backupFrm.getContentPane().add(lblFiles);
 				
-				addFileBtn = new JButton("Add File");
-				addFileBtn.setFont(new Font("SansSerif", Font.PLAIN, 11));
-				addFileBtn.addActionListener(this);
-				addFileBtn.setBounds(259, 262, 71, 23);
-				backupFrm.getContentPane().add(addFileBtn);
+		addFileBtn = new JButton("Add File");
+		addFileBtn.setFont(new Font("SansSerif", Font.PLAIN, 11));
+		addFileBtn.addActionListener(this);
+		addFileBtn.setBounds(259, 262, 71, 23);
+		backupFrm.getContentPane().add(addFileBtn);
 				
-				password = new JPasswordField();
-				password.setBounds(90, 145, 159, 20);
-				backupFrm.getContentPane().add(password);
-				password.setColumns(10);
+		password = new JPasswordField();
+		password.setBounds(90, 145, 159, 20);
+		backupFrm.getContentPane().add(password);
+		password.setColumns(10);
 				
-				username = new JTextField();
-				username.setBounds(90, 114, 159, 20);
-				backupFrm.getContentPane().add(username);
-				username.setColumns(10);
+		username = new JTextField();
+		username.setBounds(90, 114, 159, 20);
+		backupFrm.getContentPane().add(username);
+		username.setColumns(10);
 				
-				lblUserName = new JLabel("User Name");
-				lblUserName.setBounds(29, 117, 86, 14);
-				backupFrm.getContentPane().add(lblUserName);
+		lblUserName = new JLabel("User Name");
+		lblUserName.setBounds(29, 117, 86, 14);
+		backupFrm.getContentPane().add(lblUserName);
 				
-				lblPassword = new JLabel("Password");
-				lblPassword.setBounds(29, 148, 86, 14);
-				backupFrm.getContentPane().add(lblPassword);
+		lblPassword = new JLabel("Password");
+		lblPassword.setBounds(29, 148, 86, 14);
+		backupFrm.getContentPane().add(lblPassword);
 				
-				lblUserName.setEnabled(false);
-				lblPassword.setEnabled(false);
-				username.setEnabled(false);
-				password.setEnabled(false);
+		lblUserName.setEnabled(false);
+		lblPassword.setEnabled(false);
+		username.setEnabled(false);
+		password.setEnabled(false);
 		
+		//manual backup selected by default
+		manualRadio.doClick();
 	}
 	
 	public void actionPerformed(ActionEvent e) {
@@ -217,6 +219,10 @@ public class BackupDialog implements ActionListener{
 			 username.setEnabled(false);
 			 password.setEnabled(false);
 			 comboBox.setEnabled(false);
+			 backupLocation.setEnabled(true);
+			 fileBtn2.setEnabled(true);
+			 lblBackupLocation.setEnabled(true);
+			 newSession = new ManualSession(false, false);
 		 }
 		 if(e.getSource() == scheduleRadio) {
 			 lblUserName.setEnabled(false);
@@ -224,6 +230,9 @@ public class BackupDialog implements ActionListener{
 			 username.setEnabled(false);
 			 password.setEnabled(false);
 			 comboBox.setEnabled(true);
+			 backupLocation.setEnabled(true);
+			 fileBtn2.setEnabled(true);
+			 lblBackupLocation.setEnabled(true);
 		 }
 		 if(e.getSource() == sambaRadio) {
 			 lblUserName.setEnabled(true);
@@ -231,11 +240,16 @@ public class BackupDialog implements ActionListener{
 			 username.setEnabled(true);
 			 password.setEnabled(true);
 			 comboBox.setEnabled(false);
+			 backupLocation.setEnabled(false);
+			 fileBtn2.setEnabled(false);
+			 lblBackupLocation.setEnabled(false);
+
+			 newSession = new NetworkedSession(false, false);
 		 }
 		 if(e.getSource() == fileBtn1) {
 			 final JFileChooser fc = new JFileChooser();
 			 fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-			 int returnVal = fc.showOpenDialog(backupFrm);
+			 fc.showOpenDialog(backupFrm);
 			 String location = fc.getSelectedFile().getAbsolutePath();
 			 if(location!=null)
 			 fileLocation.setText(location);
@@ -244,44 +258,53 @@ public class BackupDialog implements ActionListener{
 			 final JFileChooser fc = new JFileChooser();
 			 fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			 fc.setAcceptAllFileFilterUsed(false);
-			 int returnVal = fc.showOpenDialog(backupFrm);
+			 fc.showOpenDialog(backupFrm);
 			 String location = fc.getSelectedFile().getAbsolutePath();
 			 if(location!=null)
 			 backupLocation.setText(location);
 		 }
 		 if (e.getSource() == createBackup) {
-			 newSession.setBackupLocation(backupLocation.getText());
-			 newSession.setCompressed(compressCheck.isSelected());
-			 newSession.setEncrypted(encryptCheck.isSelected());
-			 try {
-				newSession.backupFiles();
-			 } catch (Exception e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			system.addSessionToIndex(newSession);
+			 //manual session
+			// if(manualRadio.isSelected()) {
+			 	newSession.setBackupLocation(backupLocation.getText());
+			 	newSession.setCompressed(compressCheck.isSelected());
+			 	newSession.setEncrypted(encryptCheck.isSelected());
+			 	 try {
+			 		newSession.backupFiles();
+			 	 } catch (Exception e1) {
+			 		 e1.printStackTrace();
+			 	 }
+			 	 //}
+			 	system.addSessionToIndex(newSession);
+			 	backupFrm.dispose();
 		 }
+		 
 		 if(e.getSource() == addFileBtn) {
-			 try {
-				newSession.setAuth("75.69.70.180", username.getText(), password.getText());
-				if (new File(fileLocation.getText()).isDirectory()) {
-					Collection<File> files = FileUtils.listFiles(new File(fileLocation.getText()), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
-					for (File file : files) {
-						if (!file.isDirectory()) {
-						newSession.addFile(file);
-						fileListModel.addElement(file.getPath());
-						}
+			 if(sambaRadio.isSelected()) {
+				 try {
+					 ((NetworkedSession)newSession).setAuth("75.69.70.180", username.getText(), password.getText());
+					 if (new File(fileLocation.getText()).isDirectory()) {
+						 Collection<File> files = FileUtils.listFiles(new File(fileLocation.getText()), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
+						 for (File file : files) {
+							 if (!file.isDirectory()) {
+								 newSession.addFile(file);
+								 fileListModel.addElement(file.getPath());
+							 }
+						 }
+					 }
+				 } catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
 					}
-				}
-					
-				else {	
+			 }
+			else if (manualRadio.isSelected()){	
+				try {
 					newSession.addFile(new File(fileLocation.getText()));
-				 	fileListModel.addElement(fileLocation.getText());
+					fileListModel.addElement(fileLocation.getText());
+				} catch (Exception e1) {
+					e1.printStackTrace();
 				}
-			} catch (Exception e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+				}
 		 }
 	}
 }

@@ -6,10 +6,10 @@ import javax.swing.JFrame;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -18,7 +18,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
-import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -39,8 +38,6 @@ import java.awt.event.ActionListener;
 public class InfoPane implements ActionListener{
 
 	private JDialog dialog;
-	private JDialog parent;
-	private HashMap<String, Session> fileNameMap;
 	private String curSelection;
 	private Index index;
 	private JTree fileList;
@@ -55,6 +52,8 @@ public class InfoPane implements ActionListener{
 	private JButton restoreButton;
 	private int selectedIndex;
 	private JButton deleteButton;
+	private Boolean curIsEncrypted;
+	private Boolean curIsCompressed;
 
 	/**
 	 * Create the application.
@@ -66,8 +65,7 @@ public class InfoPane implements ActionListener{
 	 * no other values are accepted
 	 */
 	public InfoPane(JDialog par, Index i, int type) {
-		parent = par;
-		fileNameMap = new HashMap<String, Session>();
+		new HashMap<String, Session>();
 		index = i;
 		initialize(type);
 		dialog.setVisible(true);
@@ -116,7 +114,7 @@ public class InfoPane implements ActionListener{
 		dialog.setIconImage(Toolkit.getDefaultToolkit().getImage(BackupDialog.class.getResource("/images/hdd1.png")));
 		dialog.getContentPane().setLayout(new GridLayout(0, 3, 0, 0));
 		
-		dialog.setBounds(100, 100, 469, 300);
+		dialog.setBounds(100, 100, 521, 300);
 		dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
 		top = new DefaultMutableTreeNode("Backups");
@@ -159,18 +157,18 @@ public class InfoPane implements ActionListener{
 		panel.setLayout(null);
 		detailsList = new JList<String>(detailsListModel);
 		detailsView = new JScrollPane(detailsList);
-		detailsView.setBounds(0, 0, 151, 239);
+		detailsView.setBounds(0, 0, 168, 239);
 		panel.add(detailsView);
 		
 		restoreButton = new JButton("Restore");
-		restoreButton.setBounds(0, 238, 78, 23);
+		restoreButton.setBounds(0, 238, 85, 23);
 		restoreButton.setAlignmentX(Component.LEFT_ALIGNMENT);
 		restoreButton.setMaximumSize(new Dimension(75, 25));
 		restoreButton.addActionListener(this);
 		panel.add(restoreButton);
 	
 		deleteButton = new JButton("Delete");
-		deleteButton.setBounds(72, 238, 78, 23);
+		deleteButton.setBounds(83, 238, 85, 23);
 		deleteButton.setAlignmentX(Component.LEFT_ALIGNMENT);
 		deleteButton.setMaximumSize(new Dimension(75, 25));
 		deleteButton.addActionListener(this);
@@ -185,7 +183,7 @@ public class InfoPane implements ActionListener{
 		detailsList.removeAll();
 		
 		//take no action if the selected node isnt there anymore
-		if(tse.getNewLeadSelectionPath().getLastPathComponent() == null)
+		if(tse.getNewLeadSelectionPath() == null)
 			return;
 		
 		curSelection = tse.getNewLeadSelectionPath().getLastPathComponent().toString();
@@ -195,15 +193,19 @@ public class InfoPane implements ActionListener{
 
 		BasicFileAttributes attr;
 		try {
-			long millis = 3600000;
-			attr = Files.readAttributes(curr.toPath(), BasicFileAttributes.class);
-				/*String ct = String.format("%02d:%02d:%02d", 
-						TimeUnit.MILLISECONDS.toHours(millis),
-						TimeUnit.MILLISECONDS.toMinutes(millis) -  
-						TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)));*/  
+			attr = Files.readAttributes(curr.toPath(), BasicFileAttributes.class); 
 			detailsListModel.addElement(curSelection);
 			detailsListModel.addElement("Backup Size - " + Double.toString(curr.length()/1000) + "kb");
-			detailsListModel.addElement("Backup Created On - " + attr.creationTime().toString());
+			Date created = new Date(attr.creationTime().to(TimeUnit.MILLISECONDS));
+			detailsListModel.addElement("Backup Created On - " + created.toString());
+			if(curIsEncrypted)
+				detailsListModel.addElement("Encrypted");
+			else
+				detailsListModel.addElement("Not Encrypted");
+			if(curIsCompressed)
+				detailsListModel.addElement("Compressed");
+			else
+				detailsListModel.addElement("Not Compressed");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -229,25 +231,31 @@ public class InfoPane implements ActionListener{
 							e1.printStackTrace();
 							return;
 						}
-				JOptionPane.showMessageDialog(null, "Restore Succesful!");
 				}
 			}
-				
+			JOptionPane.showMessageDialog(null, "Restore Successful!");
 		}
 		if(e.getSource() == deleteButton) {
 			File curr = getFileFromName(curSelection);
 			for(Session s : index.viewSessions()) {
-				for(File f: ((ManualSession)s).viewFiles())
-					if ((f.getName()+"tmp").equals(curr.getName()))
+				for(File f: ((ManualSession)s).viewFiles()) {
+						String ext = "tmp";
+						if(((ManualSession)s).getEncrypted())
+							ext = ".enc";
+						if(((ManualSession)s).getCompressed())
+							ext = ".zip";
+					if ((f.getName()+ext).equals(curr.getName()))
 						try {
-							((ManualSession)s).deleteBackup(f);
+							((ManualSession)s).removeFile(f);
 							DefaultTreeModel model = (DefaultTreeModel)fileList.getModel();
 							model.removeNodeFromParent((MutableTreeNode)top.getChildAt(selectedIndex));
+							return;
 							//top.remove(selectedIndex);
 						} catch (Exception e1) {
 							// TODO Auto-generated catch block
 							e1.printStackTrace();
 						}
+				}
 			}
 		}
 		
@@ -268,6 +276,8 @@ public class InfoPane implements ActionListener{
 						if(((ManualSession)s).getCompressed())
 							ext = ".zip";
 						ret = new File(((ManualSession)s).getBackupDirectory() + File.separator + name + ext);
+						curIsEncrypted = s.getEncrypted();
+						curIsCompressed = s.getCompressed();
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}

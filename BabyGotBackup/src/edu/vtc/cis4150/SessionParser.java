@@ -6,12 +6,8 @@ package edu.vtc.cis4150;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.nio.file.Files;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -93,12 +89,6 @@ public class SessionParser {
 		}
 		bufw.write(eol);
 		bufw.close();
-	}
-	
-	/**
-	 * validate rep invariants
-	 */
-	private void repOK() {
 	}
 	
 	private String _iniLocation;

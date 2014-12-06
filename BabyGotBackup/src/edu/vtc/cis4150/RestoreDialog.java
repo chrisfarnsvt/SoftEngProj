@@ -1,16 +1,11 @@
 package edu.vtc.cis4150;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.BoxLayout;
 import javax.swing.JFrame;
-import javax.swing.JRadioButton;
-import javax.swing.JTextField;
 import javax.swing.JLabel;
 
 import java.awt.GridLayout;
@@ -21,6 +16,7 @@ import javax.swing.SwingConstants;
 
 public class RestoreDialog extends JDialog implements ActionListener{
 	
+	private static final long serialVersionUID = 3120046731931658230L;
 	private JDialog restoreFrm;
 	private JButton idButton;
 	private JButton fileButton;
@@ -75,15 +71,15 @@ public class RestoreDialog extends JDialog implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == idButton){
 			restoreFrm.dispose();
-			InfoPane ip = new InfoPane(restoreFrm, system.getIndex(), 1);
+			new InfoPane(restoreFrm, system.getIndex(), 1);
 		}
 		if(e.getSource() == fileButton){
 			restoreFrm.dispose();
-			InfoPane ip = new InfoPane(restoreFrm, system.getIndex(), 2);
+			new InfoPane(restoreFrm, system.getIndex(), 2);
 		}
 		if(e.getSource() == sessionButton){
 			restoreFrm.dispose();
-			InfoPane ip = new InfoPane(restoreFrm, system.getIndex(), 3);
+			new InfoPane(restoreFrm, system.getIndex(), 3);
 		}
 		
 	}

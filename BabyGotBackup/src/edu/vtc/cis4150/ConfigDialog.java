@@ -1,6 +1,5 @@
 package edu.vtc.cis4150;
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.Toolkit;
 
 import javax.swing.JButton;
@@ -10,11 +9,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
-import javax.swing.SwingConstants;
-import javax.swing.BoxLayout;
-
-import java.awt.Component;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -23,6 +17,7 @@ import javax.swing.JTextField;
 
 public class ConfigDialog extends JDialog implements ActionListener {
 
+	private static final long serialVersionUID = -8041453801782812282L;
 	private final JPanel contentPanel = new JPanel();
 	private JTextField textField;
 	private JButton chooseDirectoryButton;
@@ -82,7 +77,7 @@ public class ConfigDialog extends JDialog implements ActionListener {
 			 final JFileChooser fc = new JFileChooser();
 			 fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			 fc.setAcceptAllFileFilterUsed(false);
-			 int returnVal = fc.showOpenDialog(contentPanel);
+			 fc.showOpenDialog(contentPanel);
 			 String location = fc.getSelectedFile().getAbsolutePath();
 			textField.setText(location);
 		}

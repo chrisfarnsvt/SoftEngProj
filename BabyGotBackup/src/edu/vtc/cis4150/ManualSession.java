@@ -7,25 +7,21 @@ package edu.vtc.cis4150;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.CopyOption;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.security.*;  
 import java.security.spec.KeySpec;
 
 import javax.crypto.*;  
-import javax.crypto.spec.*;  
-
-import java.io.*; 
+import javax.crypto.spec.*; 
 
 
 /**
@@ -113,14 +109,26 @@ public class ManualSession implements Session{
 	 * @param file the file to be removed
 	 * @throws Exception 
 	 */
-	public void removeFile(File file) throws Exception {
-		_files.remove(file);
-		if(_isBackedUp){
-			file = new File(_backupLocation + file.getPath() + file.getName());
-			file.delete();
+	public void removeFile(File f) throws Exception {
+		for (File file: _files) {
+			if (file.getName().equals(f.getName())) {
+				_backupToFile.remove(file);
+				String ext = "tmp";
+				if(_isEncrypted)
+					ext = ".enc";
+				if(_isCompressed)
+					ext = ".zip";
+				File deleteMe = new File(_backupLocation + File.separator + f.getName() + ext);
+				Files.delete(deleteMe.toPath());
+							
+				for (Map.Entry<File, File> fileEnt: _backupToFile.entrySet()) { //foreach for a map. messy, but works
+					if (fileEnt.getKey().getName().equals(deleteMe.getName()))
+						_backupToFile.remove(fileEnt.getKey());
+				}
+				_lastModifiedDate = new Date();
+				return;
+			}
 		}
-		_lastModifiedDate = new Date();
-		repOK();
 	}
 
 	/**
@@ -269,7 +277,7 @@ public class ManualSession implements Session{
 			byte[] salt = new byte [8];
 			SecureRandom secureRandom = new SecureRandom();
 			secureRandom.nextBytes(salt);
-			FileOutputStream saltOutFile = new FileOutputStream(file.getName() + "salt.enc");
+			FileOutputStream saltOutFile = new FileOutputStream(file.getName() + ".salt.enc");
 			saltOutFile.write(salt);
 			saltOutFile.close();
 			

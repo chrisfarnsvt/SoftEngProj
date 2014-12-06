@@ -14,6 +14,7 @@ public class BackupSystem {
 	 */
 	public BackupSystem() {
 		_index = new Index();
+		repOK();
 	}
 
 	/**
@@ -26,7 +27,7 @@ public class BackupSystem {
 	private Index _index; // never null
 	private String defaultBackupLocation;
 
-	public void addSessionToIndex(ManualSession newSession) {
+	public void addSessionToIndex(Session newSession) {
 		_index.pushSession(newSession);
 		
 	}
