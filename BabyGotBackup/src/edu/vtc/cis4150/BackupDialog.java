@@ -50,7 +50,8 @@ public class BackupDialog implements ActionListener{
 	private JCheckBox compressCheck;
 	private JButton addFileBtn;
 	private DefaultListModel<String> fileListModel;
-	private ManualSession newSession;
+	//private ManualSession newSession;
+	private NetworkedSession newSession;
 	private JTextField password;
 	private JTextField username;
 	private JRadioButton sambaRadio;
@@ -62,7 +63,8 @@ public class BackupDialog implements ActionListener{
 	 */
 	public BackupDialog(JFrame parentFrm, BackupSystem s) {
 		
-		newSession = new ManualSession(false, false);
+		//newSession = new ManualSession(false, false);
+		newSession = new NetworkedSession(false, false);
 		
 		parent  = parentFrm;
 		system = s;
@@ -261,6 +263,7 @@ public class BackupDialog implements ActionListener{
 		 }
 		 if(e.getSource() == addFileBtn) {
 			 try {
+				newSession.setAuth("75.69.70.180", username.getText(), password.getText());
 				if (new File(fileLocation.getText()).isDirectory()) {
 					Collection<File> files = FileUtils.listFiles(new File(fileLocation.getText()), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
 					for (File file : files) {
@@ -275,7 +278,7 @@ public class BackupDialog implements ActionListener{
 					newSession.addFile(new File(fileLocation.getText()));
 				 	fileListModel.addElement(fileLocation.getText());
 				}
-			} catch (IOException e1) {
+			} catch (Exception e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
