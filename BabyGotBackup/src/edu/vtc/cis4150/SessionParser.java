@@ -58,8 +58,38 @@ public class SessionParser {
 				}
 				sys.getIndex().pushSession(session);
 			}
-			//if (type == "1")
-				//session = new ScheduledSession();
+			if (type.equals("1"))
+			{
+			//	System.out.println("Reading a ScheduledSession");
+				int interval = Integer.valueOf(input.nextLine());
+				session = new ScheduledSession(encrypted, compressed, interval);
+				
+				boolean cont = Boolean.valueOf(input.nextLine());
+				((ScheduledSession) session).setContinueVal(cont);
+								
+				int version = Integer.valueOf(input.nextLine());
+				((ScheduledSession) session).setVersion(version);
+								
+				String backupDir = input.nextLine();
+				//	System.out.println(backupDir + " = backupDirectory");
+				session.setBackupLocation(backupDir);
+								
+				String check = input.nextLine();
+				while (!check.equals("")) {
+					String backup = check;
+					//	System.out.println(backup + " = backupFile");
+					String source = input.nextLine();
+					//	System.out.println(source + " = sourceFile");
+					session.addBackupMapEntry(new File(backup), new File(source));
+					session.addFile(new File(source));
+					if (input.hasNextLine())
+						check = input.nextLine();
+					else 
+						check = "";
+				}
+			sys.getIndex().pushSession(session);
+		}
+
 			//if (type == "2")
 				//session = new NetworkedSession();
 		}
@@ -78,11 +108,16 @@ public class SessionParser {
 		if(session instanceof ManualSession)
 			bufw.write("0");
 		if(session instanceof ScheduledSession)
-			bufw.write("1");
+		{
+			bufw.write("1" + eol);
+			bufw.write("" + ((ScheduledSession) session).getInterval() + eol);
+			bufw.write("" + ((ScheduledSession) session).getContinueVal() + eol);
+			bufw.write("" + ((ScheduledSession) session).getVersion());
+		}
 		if(session instanceof NetworkedSession)
 			bufw.write("2");
 		bufw.write(eol);
-		bufw.write(session.getBackupDirectory() + eol);
+		bufw.write(session.getBackupDirectory().trim() + eol);
 		for (Map.Entry<File, File> fileEnt: session.getBackupToFileMap().entrySet()) { //foreach for a map. messy, but works
 			bufw.write(fileEnt.getKey().getPath() + eol);
 			bufw.write(fileEnt.getValue().getPath() + eol);

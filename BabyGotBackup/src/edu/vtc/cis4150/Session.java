@@ -43,4 +43,6 @@ public interface Session{
 	public abstract void setCompressed(boolean selected);
 
 	public abstract void setEncrypted(boolean selected);
+	
+	public abstract void restoreFile(File curr) throws Exception;
 }

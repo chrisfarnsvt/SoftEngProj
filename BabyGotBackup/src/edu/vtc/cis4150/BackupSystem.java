@@ -3,6 +3,17 @@
  */
 package edu.vtc.cis4150;
 
+import org.apache.log4j.BasicConfigurator;
+import org.quartz.JobBuilder;
+import org.quartz.JobDetail;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.SchedulerFactory;
+import org.quartz.SimpleScheduleBuilder;
+import org.quartz.Trigger;
+import org.quartz.TriggerBuilder;
+import org.quartz.impl.StdSchedulerFactory;
+
 /**
  * System - A backup utility system
  * @author YOURNAMEHERE
@@ -14,6 +25,13 @@ public class BackupSystem {
 	 */
 	public BackupSystem() {
 		_index = new Index();
+		BasicConfigurator.configure();
+		try {
+			startScheduler();
+		} catch (SchedulerException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		repOK();
 	}
 
@@ -24,9 +42,27 @@ public class BackupSystem {
 		assert (_index != null);
 	}
 	
-	private Index _index; // never null
+	private static Index _index; // never null
 	private String defaultBackupLocation;
 
+	private void startScheduler() throws SchedulerException {
+		
+		JobDetail job = JobBuilder.newJob(CheckScheduleJob.class)
+				.withIdentity("CheckSchedule")
+				.build();
+		
+		Trigger trigger = TriggerBuilder.newTrigger()
+				.withSchedule(
+						SimpleScheduleBuilder.simpleSchedule()
+						.withIntervalInSeconds(10)		//For testing - change to '.withIntervalInMinutes(30)' for final.
+						.repeatForever()).build();
+		
+		SchedulerFactory schFactory = new StdSchedulerFactory();
+		Scheduler sch = schFactory.getScheduler();
+	
+		sch.start();
+		sch.scheduleJob(job, trigger);
+	}
 	public void addSessionToIndex(Session newSession) {
 		_index.pushSession(newSession);
 		
@@ -35,7 +71,7 @@ public class BackupSystem {
 		_index.pushSession(newSession);
 		
 	}
-	public Index getIndex() {
+	public static Index getIndex() {
 		// TODO Auto-generated method stub
 		return _index;
 	}

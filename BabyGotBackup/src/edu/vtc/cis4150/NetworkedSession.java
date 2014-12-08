@@ -2,8 +2,6 @@
  * NetworkedSession.java
  * BGB
  */
-//Note: this is not currently included in the final project. it doesn't 100% comply with the abstract and time's
-//run out to modify it further (this applies to smbHandler as well)
 package edu.vtc.cis4150;
 
 import java.util.ArrayList;
@@ -16,6 +14,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
+
 import jcifs.smb.SmbFile;
 
 

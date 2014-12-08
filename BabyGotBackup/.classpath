@@ -5,5 +5,11 @@
 	<classpathentry kind="lib" path="miglayout15-swing.jar" sourcepath="miglayout-src.zip"/>
 	<classpathentry kind="lib" path="C:/Users/Colin B/Desktop/BabyGotBackup/org.apache.commons.io.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Colin B/Desktop/BabyGotBackup/jcifs-1.1.11.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Colin B/Desktop/ BGBUpdate/c3p0-0.9.1.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Colin B/Desktop/ BGBUpdate/log4j-1.2.16.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Colin B/Desktop/ BGBUpdate/quartz-2.2.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Colin B/Desktop/ BGBUpdate/quartz-jobs-2.2.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Colin B/Desktop/ BGBUpdate/slf4j-api-1.6.6.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Colin B/Desktop/ BGBUpdate/slf4j-log4j12-1.6.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

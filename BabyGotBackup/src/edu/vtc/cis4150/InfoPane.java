@@ -80,7 +80,7 @@ public class InfoPane implements ActionListener{
 		ArrayList<Session> sessions = index.viewSessions();
 		if(sessions.size() != 0)
 		for (Session s: sessions){
-			ArrayList<File> files = ((ManualSession)s).viewFiles();
+			ArrayList<File> files = (s).viewFiles();
 			for(File f: files) {
 				top.add(new DefaultMutableTreeNode(f.getName()));
 			}
@@ -97,12 +97,25 @@ public class InfoPane implements ActionListener{
 		if(sessions.size() != 0)
 		for (Session s: sessions){
 			DefaultMutableTreeNode sess = new DefaultMutableTreeNode("Session");
-			top.add(sess);
 			
-			ArrayList<File> files = ((ManualSession)s).viewFiles();
+			ArrayList<File> files = (s).viewFiles();
 			for(File f: files) {
 				sess.add(new DefaultMutableTreeNode(f.getName()));
 			}
+			top.add(sess);
+		}
+	}
+	
+	public void AddBackupSessionID() {
+		ArrayList<Session> sessions = index.viewSessions();
+		if(sessions.size() != 0)
+		for (Session s: sessions){
+			DefaultMutableTreeNode sess = new DefaultMutableTreeNode("Session " + (((ScheduledSession)s).getSessionID()));
+			ArrayList<File> files = s.viewFiles();
+			for(File f: files) {
+				sess.add(new DefaultMutableTreeNode(f.getName()));
+			}
+			top.add(sess);
 		}
 	}
 		
@@ -121,7 +134,7 @@ public class InfoPane implements ActionListener{
 		
 		switch (type) {
 			case(1):
-				break;
+				AddBackupSessionID();
 			case(2):
 				AddBackupFiles();
 				break;
@@ -141,7 +154,6 @@ public class InfoPane implements ActionListener{
 		
 		JScrollPane treeView = new JScrollPane(fileList);
 		dialog.getContentPane().add(treeView);
-		
 
 		versionListModel = new DefaultListModel<String>(); 
 		versionList = new JList<String>(versionListModel);
@@ -216,15 +228,15 @@ public class InfoPane implements ActionListener{
 		if(e.getSource() == restoreButton) {
 			File curr = getFileFromName(curSelection);
 			for(Session s : index.viewSessions()) {
-				for(File f: ((ManualSession)s).viewFiles()){
+				for(File f: s.viewFiles()){
 					String ext = "tmp";
-					if(((ManualSession)s).getEncrypted())
+					if((s).getEncrypted())
 						ext = ".enc";
-					if(((ManualSession)s).getCompressed())
+					if((s).getCompressed())
 						ext = ".zip";
 				if ((f.getName()+ext).equals(curr.getName()))
 					try {
-						((ManualSession)s).restoreFile(curr);
+						(s).restoreFile(curr);
 						
 					} catch (Exception e1) {
 							JOptionPane.showMessageDialog(null, "Restore Failed.");
@@ -238,15 +250,15 @@ public class InfoPane implements ActionListener{
 		if(e.getSource() == deleteButton) {
 			File curr = getFileFromName(curSelection);
 			for(Session s : index.viewSessions()) {
-				for(File f: ((ManualSession)s).viewFiles()) {
+				for(File f: (s).viewFiles()) {
 						String ext = "tmp";
-						if(((ManualSession)s).getEncrypted())
+						if((s).getEncrypted())
 							ext = ".enc";
-						if(((ManualSession)s).getCompressed())
+						if((s).getCompressed())
 							ext = ".zip";
 					if ((f.getName()+ext).equals(curr.getName()))
 						try {
-							((ManualSession)s).removeFile(f);
+							(s).removeFile(f);
 							DefaultTreeModel model = (DefaultTreeModel)fileList.getModel();
 							model.removeNodeFromParent((MutableTreeNode)top.getChildAt(selectedIndex));
 							return;
@@ -267,15 +279,20 @@ public class InfoPane implements ActionListener{
 		//-Colin
 		File ret = null;
 		for (Session s : index.viewSessions()) {
-			for (File f: ((ManualSession)s).viewFiles()){
+			for (File f: (s).viewFiles()){
 				if (f.getName() == name);
 					try {
 						String ext = "tmp";
-						if(((ManualSession)s).getEncrypted())
+						if((s).getEncrypted())
 							ext = ".enc";
-						if(((ManualSession)s).getCompressed())
+						if((s).getCompressed())
 							ext = ".zip";
-						ret = new File(((ManualSession)s).getBackupDirectory() + File.separator + name + ext);
+						String temp = s.getBackupDirectory() + File.separator + name;
+						if(temp.substring((temp.length()-3), temp.length()).equals(ext))
+							ret = new File(temp);
+						else
+							ret = new File(s.getBackupDirectory() + File.separator + name + ext);
+
 						curIsEncrypted = s.getEncrypted();
 						curIsCompressed = s.getCompressed();
 					} catch (Exception e1) {

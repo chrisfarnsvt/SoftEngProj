@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import javax.swing.JScrollPane;
 import javax.swing.BoxLayout;
 
+//please
 
 public class ScheduleDialog extends JDialog {
 	
@@ -30,15 +31,15 @@ public class ScheduleDialog extends JDialog {
 		
 		setBounds(100, 100, 358, 346);
 		
-		backupTable = new JTable(new DefaultTableModel(new Object[]{"File Name", "Next Backup"},0));
+		backupTable = new JTable(new DefaultTableModel(new Object[]{"Session ID", "Next Backup"},0));
 		
 		backupTable.setFillsViewportHeight(true);
 		JScrollPane scrollPane = new JScrollPane(backupTable);
 		getContentPane().add(scrollPane);
 		
-		sessions = system.getIndex().viewSessions();
+		sessions = BackupSystem.getIndex().viewSessions();
 		
-		//fillTable();
+		fillTable();
 		
 		this.setVisible(true);
 	}
@@ -46,15 +47,15 @@ public class ScheduleDialog extends JDialog {
 	public void fillTable() {
 
 		DefaultTableModel tm = (DefaultTableModel) backupTable.getModel();
-		String[] data = {"place", "holder"};
+		Object[] data = {"place", "holder"};
 
-		tm.addRow(data);
-		
+		//tm.addRow(data);
+		System.out.println(sessions.size());
 		for(Session session: sessions) {
-			if(session instanceof ScheduledSession)
-			for(File f: session.viewFiles()) {
-				data[0] = f.getName();
-				data[1] = "Time";
+			if(session instanceof ScheduledSession) {
+				data[0] = "Session" + ((ScheduledSession) session).getSessionID();
+				data[1] = ((ScheduledSession) session).getScheduledBackupTime().getTime().toString();
+				tm.addRow(data);
 			}
 		}
 	}

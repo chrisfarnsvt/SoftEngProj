@@ -282,7 +282,7 @@ public class ManualSession implements Session{
 			saltOutFile.close();
 			
 			SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-			KeySpec keySpec = new PBEKeySpec(_pass.toCharArray(), salt, 65536, 256);
+			KeySpec keySpec = new PBEKeySpec(_pass.toCharArray(), salt, 65536, 128);
 			SecretKey secretKey = factory.generateSecret(keySpec);
 			SecretKey secret = new SecretKeySpec(secretKey.getEncoded(), "AES");
 			
