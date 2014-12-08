@@ -20,7 +20,8 @@ import jcifs.smb.SmbFile;
 
 
 /**
- * Session - a backup session
+ * NetworkedSession - a backup session, over a network
+ * unused as of presentation time
  * @author YOURNAMEHERE
  */
 public class NetworkedSession implements Session{

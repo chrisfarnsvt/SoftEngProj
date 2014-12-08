@@ -1,6 +1,5 @@
 package edu.vtc.cis4150;
 
-//A handler class that implements JCIFS methods for transferring data to/from a samba server.
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,7 +9,12 @@ import java.net.UnknownHostException;
 import java.nio.file.Path;
 import jcifs.UniAddress;
 import jcifs.smb.*;
- 
+
+/**
+ * Handler for the samba server
+ * @author YOURNAMEHERE
+ *
+ */
 
 public class SmbHandler
 {

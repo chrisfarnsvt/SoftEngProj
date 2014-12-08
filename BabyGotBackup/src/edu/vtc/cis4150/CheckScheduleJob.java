@@ -8,9 +8,19 @@ import org.quartz.JobExecutionException;
 
 //import com.sun.istack.internal.logging.Logger;
 
+/**
+ * The job that scheduler calls
+ * 
+ * @author YOURNAMEHERE
+ */
+
 public class CheckScheduleJob implements Job {
 
-	
+	/**
+	 * Execute the schedule job
+	 * @param context
+	 * @throws JobExecutionException
+	 */
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
 		Calendar c = Calendar.getInstance();

@@ -14,6 +14,12 @@ import java.awt.event.ActionListener;
 
 import javax.swing.SwingConstants;
 
+/**
+ * The dialogue for restoring a file
+ * @author YOURNAMEHERE
+ *
+ */
+
 public class RestoreDialog extends JDialog implements ActionListener{
 	
 	private static final long serialVersionUID = 3120046731931658230L;
@@ -37,6 +43,9 @@ public class RestoreDialog extends JDialog implements ActionListener{
 		
 	}
 	
+	/**
+	 * Initializes the ui
+	 */
 	public void initUI(){
 		
 		restoreFrm.setBounds(100, 100, 450, 300);

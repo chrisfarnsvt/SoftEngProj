@@ -10,7 +10,11 @@ import java.util.ArrayList;
 import javax.swing.JScrollPane;
 import javax.swing.BoxLayout;
 
-//please
+/**
+ * The dialog for displaying scheduled backups
+ * @author YOURNAMEHERE
+ *
+ */
 
 public class ScheduleDialog extends JDialog {
 	
@@ -44,6 +48,10 @@ public class ScheduleDialog extends JDialog {
 		this.setVisible(true);
 	}
 	
+	
+	/**
+	 * Fills the table that makes up the dialog
+	 */
 	public void fillTable() {
 
 		DefaultTableModel tm = (DefaultTableModel) backupTable.getModel();

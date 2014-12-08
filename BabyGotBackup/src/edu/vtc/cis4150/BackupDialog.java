@@ -24,6 +24,10 @@ import javax.swing.DefaultComboBoxModel;
 import java.awt.Toolkit;
 import java.io.File;
 
+/**
+ * BackupDialog - Dialog for backup
+ * @author YOURNAMEHERE
+ */
 
 public class BackupDialog implements ActionListener{
 
@@ -166,6 +170,11 @@ public class BackupDialog implements ActionListener{
 		manualRadio.doClick();
 	}
 	
+	/**
+	 * Listener for interaction with UI
+	 * 
+	 * @param e The event that occurs
+	 */
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == createBackup){
 			//we would handle the backup creation here

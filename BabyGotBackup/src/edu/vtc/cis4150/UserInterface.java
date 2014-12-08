@@ -21,12 +21,13 @@ import java.io.File;
 import java.nio.file.Files;
 
 /**
- * @author Colin B
  *
  *This is the main window for Baby Got backup
  *
  * Icons made by Freepik, SimpleIcon from http://www.flaticon.com
  * flaticon.com is licensed by CC BY 3.0
+ * 
+ * @author YOURNAMEHERE
  */
 
 public class UserInterface implements ActionListener{

@@ -25,7 +25,7 @@ import javax.crypto.spec.*;
 
 
 /**
- * Session - a backup session
+ * ManualSession - a backup session
  * @author YOURNAMEHERE
  */
 public class ManualSession implements Session{

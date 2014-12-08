@@ -14,6 +14,11 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JTextField;
 
+/**
+ * Configuration dialog.
+ * @author YOURNAMEHERE
+ *
+ */
 
 public class ConfigDialog extends JDialog implements ActionListener {
 

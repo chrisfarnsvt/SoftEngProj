@@ -34,6 +34,11 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * The panel containing information for the backups, before a restore
+ * @author YOURNAMEHERE
+ *
+ */
 
 public class InfoPane implements ActionListener{
 
@@ -106,6 +111,9 @@ public class InfoPane implements ActionListener{
 		}
 	}
 	
+	/**
+	 * Add an ID to the session
+	 */
 	public void AddBackupSessionID() {
 		ArrayList<Session> sessions = index.viewSessions();
 		if(sessions.size() != 0)
