@@ -21,8 +21,12 @@ import java.awt.event.ActionListener;
 
 import javax.swing.DefaultComboBoxModel;
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.TrueFileFilter;
+
 import java.awt.Toolkit;
 import java.io.File;
+import java.util.Collection;
 
 /**
  * BackupDialog - Dialog for backup
@@ -44,8 +48,8 @@ public class BackupDialog implements ActionListener{
 	private JRadioButton manualRadio;
 	private JComboBox<String> comboBox;
 	private JButton createBackup;
-	private JCheckBox encryptCheck;
-	private JCheckBox compressCheck;
+	private JRadioButton encryptCheck;
+	private JRadioButton compressCheck;
 	private JButton addFileBtn;
 	private DefaultListModel<String> fileListModel;
 	//private ManualSession newSession;
@@ -76,6 +80,7 @@ public class BackupDialog implements ActionListener{
 		backupFrm.setResizable(false);
 		
 		ButtonGroup backupType = new ButtonGroup();
+		ButtonGroup encOrComp = new ButtonGroup();
 		
 		manualRadio = new JRadioButton("Manual Backup");
 		manualRadio.setFont(new Font("SansSerif", Font.PLAIN, 13));
@@ -97,13 +102,15 @@ public class BackupDialog implements ActionListener{
 		comboBox.setModel(new DefaultComboBoxModel<String>(new String[] {"hourly", "daily", "weekly"}));
 		comboBox.setBounds(20, 63, 129, 20);
 				
-		encryptCheck = new JCheckBox("Encrypt");
+		encryptCheck = new JRadioButton("Encrypt");
 		encryptCheck.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		encryptCheck.setBounds(10, 90, 105, 23);
+		encOrComp.add(encryptCheck);
 				
-		compressCheck = new JCheckBox("Compressed");
+		compressCheck = new JRadioButton("Compressed");
 		compressCheck.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		compressCheck.setBounds(10, 116, 105, 23);
+		encOrComp.add(compressCheck);
 				
 		JLabel lblNewLabel = new JLabel("File Location");
 		lblNewLabel.setBounds(10, 146, 129, 16);
@@ -245,7 +252,20 @@ public class BackupDialog implements ActionListener{
 			if (manualRadio.isSelected()){	
 				try {
 					newSession.addFile(new File(fileLocation.getText()));
-					fileListModel.addElement(fileLocation.getText());
+					if (new File(fileLocation.getText()).isDirectory()) {
+						Collection<File> files = FileUtils.listFiles(new File(fileLocation.getText()), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
+						for (File file : files) {
+							if (!file.isDirectory()) {
+								newSession.addFile(file);
+								fileListModel.addElement(file.getPath());
+							}
+						}
+					}
+					
+					else {
+						newSession.addFile(new File(fileLocation.getText()));
+						fileListModel.addElement(fileLocation.getText());
+					}
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
