@@ -46,10 +46,8 @@ public class InfoPane implements ActionListener{
 	private String curSelection;
 	private Index index;
 	private JTree fileList;
-	private JList<String> versionList;
 	private JList<String> detailsList;
 	private DefaultMutableTreeNode top;
-	private JScrollPane versionView;
 	private JScrollPane detailsView;
 	private DefaultListModel<String> versionListModel;
 	private DefaultListModel<String> detailsListModel;
@@ -59,6 +57,7 @@ public class InfoPane implements ActionListener{
 	private JButton deleteButton;
 	private Boolean curIsEncrypted;
 	private Boolean curIsCompressed;
+	private JButton archiveButton;
 
 	/**
 	 * Create the application.
@@ -67,6 +66,7 @@ public class InfoPane implements ActionListener{
 	 * 1 - ID
 	 * 2 - File
 	 * 3 - Session
+	 * 4 - Archive
 	 * no other values are accepted
 	 */
 	public InfoPane(JDialog par, Index i, int type) {
@@ -141,13 +141,26 @@ public class InfoPane implements ActionListener{
 		}
 	}
 		
+	private void AddArchivedSessions() {
+		ArrayList<Session> sessions = index.viewArchivedSessions();
+		if(sessions.size() != 0)
+		for (Session s: sessions){
+			DefaultMutableTreeNode sess = new DefaultMutableTreeNode("Session");
+			
+			ArrayList<File> files = (s).viewFiles();
+			for(File f: files) {
+				sess.add(new DefaultMutableTreeNode(f.getName()));
+			}
+			top.add(sess);
+		}
+	}
 	/**
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize(int type) {
 		dialog =  new JDialog(dialog, "Info", true);
 		dialog.setIconImage(Toolkit.getDefaultToolkit().getImage(BackupDialog.class.getResource("/images/hdd1.png")));
-		dialog.getContentPane().setLayout(new GridLayout(0, 3, 0, 0));
+		dialog.getContentPane().setLayout(new GridLayout(0, 2, 0, 0));
 		
 		dialog.setBounds(100, 100, 521, 300);
 		dialog.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -164,6 +177,9 @@ public class InfoPane implements ActionListener{
 			case(3):
 				AddBackupSessions();
 				break;
+			case(4):
+				AddArchivedSessions();
+				break;
 		}
 		fileList = new JTree(top);
 		fileList.clearSelection();
@@ -177,11 +193,8 @@ public class InfoPane implements ActionListener{
 		JScrollPane treeView = new JScrollPane(fileList);
 		dialog.getContentPane().add(treeView);
 
-		versionListModel = new DefaultListModel<String>(); 
-		versionList = new JList<String>(versionListModel);
-		versionView = new JScrollPane(versionList);
+		versionListModel = new DefaultListModel<String>();
 		versionListModel.addElement("--Versions--");
-		dialog.getContentPane().add(versionView);
 		
 		detailsListModel = new DefaultListModel<String>(); 
 		detailsListModel.addElement("--Details--");
@@ -191,7 +204,7 @@ public class InfoPane implements ActionListener{
 		panel.setLayout(null);
 		detailsList = new JList<String>(detailsListModel);
 		detailsView = new JScrollPane(detailsList);
-		detailsView.setBounds(0, 0, 168, 239);
+		detailsView.setBounds(0, 0, 252, 239);
 		panel.add(detailsView);
 		
 		restoreButton = new JButton("Restore");
@@ -208,12 +221,16 @@ public class InfoPane implements ActionListener{
 		deleteButton.addActionListener(this);
 		panel.add(deleteButton);
 		
+		archiveButton = new JButton("Archive");
+		archiveButton.setBounds(167, 238, 85, 23);
+		archiveButton.addActionListener(this);
+		panel.add(archiveButton);
+		
 	}
 	
 	public void fileListChanged(TreeSelectionEvent tse) {
 		versionListModel.removeAllElements();
 		detailsListModel.removeAllElements();
-		versionList.removeAll();
 		detailsList.removeAll();
 		
 		//take no action if the selected node isnt there anymore
@@ -292,7 +309,29 @@ public class InfoPane implements ActionListener{
 				}
 			}
 		}
-		
+		if (e.getSource() == archiveButton) {
+			File curr = getFileFromName(curSelection);
+			for(Session s : index.viewSessions()) {
+				for(File f: (s).viewFiles()) {
+						String ext = ".bgb";
+						if((s).getEncrypted())
+							ext = ".enc";
+						if((s).getCompressed())
+							ext = ".zip";
+					if ((f.getName()+ext).equals(curr.getName()))
+						try {
+							index.setSessionArchived(s);
+							DefaultTreeModel model = (DefaultTreeModel)fileList.getModel();
+							model.removeNodeFromParent((MutableTreeNode)top.getChildAt(selectedIndex));
+							return;
+							//top.remove(selectedIndex);
+						} catch (Exception e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+				}
+			}
+		}
 	}
 	
 	private File getFileFromName(String name) {

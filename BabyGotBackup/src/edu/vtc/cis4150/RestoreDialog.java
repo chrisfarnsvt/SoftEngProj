@@ -27,6 +27,7 @@ public class RestoreDialog extends JDialog implements ActionListener{
 	private JButton idButton;
 	private JButton fileButton;
 	private JButton sessionButton;
+	private JButton archiveButton;
 	private BackupSystem system;
 
 	private final JPanel contentPanel = new JPanel();
@@ -73,6 +74,11 @@ public class RestoreDialog extends JDialog implements ActionListener{
 			contentPanel.add(sessionButton);
 			sessionButton.addActionListener(this);
 		}
+		{
+			archiveButton = new JButton("Archive");
+			contentPanel.add(archiveButton);
+			archiveButton.addActionListener(this);
+		}
 		
 	}
 
@@ -89,6 +95,10 @@ public class RestoreDialog extends JDialog implements ActionListener{
 		if(e.getSource() == sessionButton){
 			restoreFrm.dispose();
 			new InfoPane(restoreFrm, system.getIndex(), 3);
+		}
+		if(e.getSource() == archiveButton){
+			restoreFrm.dispose();
+			new InfoPane(restoreFrm, system.getIndex(), 4);
 		}
 		
 	}
