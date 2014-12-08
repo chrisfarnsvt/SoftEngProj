@@ -70,9 +70,9 @@ public class UserInterface implements ActionListener{
 	 */
 	public UserInterface() throws Exception {
 		system = new BackupSystem();
-		File ini = new File(System.getProperty("user.home") + File.separator + "backup.ini");
+		File ini = new File("backup.ini");
 		if (ini.exists()) {
-			SessionParser sp = new SessionParser(System.getProperty("user.home") + File.separator + "backup.ini");
+			SessionParser sp = new SessionParser("backup.ini");
 			sp.parseFrom(system);
 		}
 		initialize();
@@ -158,7 +158,7 @@ public class UserInterface implements ActionListener{
 	}
 
 	public void exit(){
-		String iniLocation = System.getProperty("user.home") + File.separator +"backup.ini";
+		String iniLocation = "backup.ini";
 		SessionParser sp = new SessionParser(iniLocation);
 		
 		//write the default backup location to the ini file

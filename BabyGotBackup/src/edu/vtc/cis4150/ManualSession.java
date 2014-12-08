@@ -113,7 +113,7 @@ public class ManualSession implements Session{
 		for (File file: _files) {
 			if (file.getName().equals(f.getName())) {
 				_backupToFile.remove(file);
-				String ext = "tmp";
+				String ext = ".tmp";
 				if(_isEncrypted)
 					ext = ".enc";
 				if(_isCompressed)
@@ -186,8 +186,8 @@ public class ManualSession implements Session{
 			if (_isEncrypted)
 				temp = encrypt(temp);
 			if (temp.equals(file)) {
-				Files.copy(temp.toPath(),(new File(temp.getPath() + "tmp")).toPath());
-				temp = new File(temp.getPath() + "tmp");
+				Files.copy(temp.toPath(),(new File(temp.getPath() + ".tmp")).toPath());
+				temp = new File(temp.getPath() + ".tmp");
 			}
 			Files.move(temp.toPath(), (new File(_backupLocation + "/" + temp.getName())).toPath(), StandardCopyOption.REPLACE_EXISTING); 
 			File result = new File(_backupLocation + "/" + temp.getName());
