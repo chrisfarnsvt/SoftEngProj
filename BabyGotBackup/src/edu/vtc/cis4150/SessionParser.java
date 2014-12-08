@@ -8,6 +8,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -69,6 +72,11 @@ public class SessionParser {
 								
 				int version = Integer.valueOf(input.nextLine());
 				((ScheduledSession) session).setVersion(version);
+				String backupDate = input.nextLine();
+				Calendar cal = Calendar.getInstance();
+				SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
+				cal.setTime(sdf.parse(backupDate));
+				((ScheduledSession) session).setScheduledBackupTime(cal);
 								
 				String backupDir = input.nextLine();
 				//	System.out.println(backupDir + " = backupDirectory");
@@ -112,8 +120,10 @@ public class SessionParser {
 			bufw.write("1" + eol);
 			bufw.write("" + ((ScheduledSession) session).getInterval() + eol);
 			bufw.write("" + ((ScheduledSession) session).getContinueVal() + eol);
-			bufw.write("" + ((ScheduledSession) session).getVersion());
+			bufw.write("" + ((ScheduledSession) session).getVersion() + eol);
+			bufw.write("" + ((ScheduledSession) session).getScheduledBackupTime().getTime());
 		}
+
 		if(session instanceof NetworkedSession)
 			bufw.write("2");
 		bufw.write(eol);

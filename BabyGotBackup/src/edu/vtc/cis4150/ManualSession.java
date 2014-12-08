@@ -119,7 +119,8 @@ public class ManualSession implements Session{
 				if(_isCompressed)
 					ext = ".zip";
 				File deleteMe = new File(_backupLocation + File.separator + f.getName() + ext);
-				Files.delete(deleteMe.toPath());
+				if (deleteMe.exists())
+					Files.delete(deleteMe.toPath());
 							
 				for (Map.Entry<File, File> fileEnt: _backupToFile.entrySet()) { //foreach for a map. messy, but works
 					if (fileEnt.getKey().getName().equals(deleteMe.getName()))

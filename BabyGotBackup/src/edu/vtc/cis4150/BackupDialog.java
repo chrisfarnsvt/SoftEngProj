@@ -27,6 +27,7 @@ import org.apache.commons.io.filefilter.TrueFileFilter;
 import java.awt.Toolkit;
 import java.io.File;
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * BackupDialog - Dialog for backup
@@ -44,12 +45,14 @@ public class BackupDialog implements ActionListener{
 	private JTextField backupLocation;
 	private JButton fileBtn1;
 	private JButton fileBtn2;
+	private JButton removeButton;
 	private JRadioButton scheduleRadio;
 	private JRadioButton manualRadio;
 	private JComboBox<String> comboBox;
 	private JButton createBackup;
-	private JRadioButton encryptCheck;
-	private JRadioButton compressCheck;
+	private JCheckBox encryptCheck;
+	private JCheckBox compressCheck;
+	JList<String> fileList;
 	private JButton addFileBtn;
 	private DefaultListModel<String> fileListModel;
 	//private ManualSession newSession;
@@ -102,15 +105,15 @@ public class BackupDialog implements ActionListener{
 		comboBox.setModel(new DefaultComboBoxModel<String>(new String[] {"hourly", "daily", "weekly"}));
 		comboBox.setBounds(20, 63, 129, 20);
 				
-		encryptCheck = new JRadioButton("Encrypt");
+		encryptCheck = new JCheckBox("Encrypt");
 		encryptCheck.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		encryptCheck.setBounds(10, 90, 105, 23);
-		encOrComp.add(encryptCheck);
+		encryptCheck.addActionListener(this);
 				
-		compressCheck = new JRadioButton("Compressed");
+		compressCheck = new JCheckBox("Compressed");
 		compressCheck.setFont(new Font("SansSerif", Font.PLAIN, 13));
 		compressCheck.setBounds(10, 116, 105, 23);
-		encOrComp.add(compressCheck);
+		compressCheck.addActionListener(this);
 				
 		JLabel lblNewLabel = new JLabel("File Location");
 		lblNewLabel.setBounds(10, 146, 129, 16);
@@ -135,11 +138,11 @@ public class BackupDialog implements ActionListener{
 				
 		lblBackupLocation = new JLabel("Backup Location");
 		lblBackupLocation.setFont(new Font("SansSerif", Font.PLAIN, 13));
-		lblBackupLocation.setBounds(10, 331, 157, 23);
+		lblBackupLocation.setBounds(10, 343, 157, 23);
 		backupFrm.getContentPane().add(lblBackupLocation);
 		
 		fileListModel = new DefaultListModel<String>();
-		JList<String> fileList = new JList<String>(fileListModel);
+		fileList = new JList<String>(fileListModel);
 		fileList.setBounds(12, 232, 256, 88);
 		JScrollPane scroll = new JScrollPane(fileList);
 		scroll.setBounds(12, 232, 256, 88);
@@ -173,6 +176,12 @@ public class BackupDialog implements ActionListener{
 		addFileBtn.setBounds(259, 172, 71, 23);
 		backupFrm.getContentPane().add(addFileBtn);
 		
+		removeButton = new JButton("Remove");
+		removeButton.setFont(new Font("SansSerif", Font.PLAIN, 11));
+		removeButton.addActionListener(this);
+		removeButton.setBounds(263, 232, 95, 88);
+		backupFrm.getContentPane().add(removeButton);
+		
 		//manual backup selected by default
 		manualRadio.doClick();
 	}
@@ -195,6 +204,14 @@ public class BackupDialog implements ActionListener{
 			 lblBackupLocation.setEnabled(true);
 			 newSession = new ManualSession(false, false);
 		 }
+		if (e.getSource() == encryptCheck) {
+			if (compressCheck.isSelected())
+				compressCheck.setSelected(false);
+		}
+		if (e.getSource() == compressCheck) {
+			if (encryptCheck.isSelected())
+				encryptCheck.setSelected(false);
+		}
 		 if(e.getSource() == scheduleRadio) {
 			 comboBox.setEnabled(true);
 			 backupLocation.setEnabled(true);
@@ -219,6 +236,19 @@ public class BackupDialog implements ActionListener{
 			 if(location!=null)
 			 backupLocation.setText(location);
 		 }
+		 
+		 if(e.getSource() == removeButton) {
+			 int index = fileList.getSelectedIndex();
+			 String file = fileList.getSelectedValue();
+		     try {
+				newSession.removeFile(new File(file));
+			    fileListModel.remove(index);
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			}
+		 
 		 if (e.getSource() == createBackup) {
 			 newSession.setBackupLocation(backupLocation.getText());
 			 newSession.setCompressed(compressCheck.isSelected());
