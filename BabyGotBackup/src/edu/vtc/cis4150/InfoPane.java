@@ -237,7 +237,7 @@ public class InfoPane implements ActionListener{
 			File curr = getFileFromName(curSelection);
 			for(Session s : index.viewSessions()) {
 				for(File f: s.viewFiles()){
-					String ext = ".tmp";
+					String ext = ".bgb";
 					if((s).getEncrypted())
 						ext = ".enc";
 					if((s).getCompressed())
@@ -259,7 +259,7 @@ public class InfoPane implements ActionListener{
 			File curr = getFileFromName(curSelection);
 			for(Session s : index.viewSessions()) {
 				for(File f: (s).viewFiles()) {
-						String ext = ".tmp";
+						String ext = ".bgb
 						if((s).getEncrypted())
 							ext = ".enc";
 						if((s).getCompressed())
@@ -290,7 +290,7 @@ public class InfoPane implements ActionListener{
 			for (File f: (s).viewFiles()){
 				if (f.getName() == name);
 					try {
-						String ext = ".tmp";
+						String ext = ".bgb";
 						if((s).getEncrypted())
 							ext = ".enc";
 						if((s).getCompressed())
