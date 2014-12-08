@@ -62,7 +62,7 @@ public class SessionParser {
 			{
 			//	System.out.println("Reading a ScheduledSession");
 				int interval = Integer.valueOf(input.nextLine());
-				session = new ScheduledSession(encrypted, compressed, interval);
+				session = new ScheduledSession(encrypted, compressed, interval, false);
 				
 				boolean cont = Boolean.valueOf(input.nextLine());
 				((ScheduledSession) session).setContinueVal(cont);

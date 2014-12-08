@@ -116,14 +116,28 @@ public class InfoPane implements ActionListener{
 	 */
 	public void AddBackupSessionID() {
 		ArrayList<Session> sessions = index.viewSessions();
+		int currID = -1;
+		DefaultMutableTreeNode sess = null;
 		if(sessions.size() != 0)
 		for (Session s: sessions){
-			DefaultMutableTreeNode sess = new DefaultMutableTreeNode("Session " + (((ScheduledSession)s).getSessionID()));
-			ArrayList<File> files = s.viewFiles();
-			for(File f: files) {
-				sess.add(new DefaultMutableTreeNode(f.getName()));
+			if(s instanceof ScheduledSession) {
+				if (((ScheduledSession) s).getSessionID()!= currID) {
+					currID = ((ScheduledSession) s).getSessionID();
+					sess = new DefaultMutableTreeNode("Session " + (((ScheduledSession)s).getSessionID()));
+					ArrayList<File> files = s.viewFiles();
+					for(File f: files) {
+						sess.add(new DefaultMutableTreeNode(f.getName()));
+					}
+				}
+				else {
+					ArrayList<File> files = s.viewFiles();
+					for(File f: files) {
+						sess.add(new DefaultMutableTreeNode(f.getName()));
+					}
+				}
+				top.add(sess);
+					
 			}
-			top.add(sess);
 		}
 	}
 		
@@ -143,6 +157,7 @@ public class InfoPane implements ActionListener{
 		switch (type) {
 			case(1):
 				AddBackupSessionID();
+				break;
 			case(2):
 				AddBackupFiles();
 				break;
@@ -150,7 +165,6 @@ public class InfoPane implements ActionListener{
 				AddBackupSessions();
 				break;
 		}
-		
 		fileList = new JTree(top);
 		fileList.clearSelection();
 		
@@ -259,7 +273,7 @@ public class InfoPane implements ActionListener{
 			File curr = getFileFromName(curSelection);
 			for(Session s : index.viewSessions()) {
 				for(File f: (s).viewFiles()) {
-						String ext = ".bgb
+						String ext = ".bgb";
 						if((s).getEncrypted())
 							ext = ".enc";
 						if((s).getCompressed())

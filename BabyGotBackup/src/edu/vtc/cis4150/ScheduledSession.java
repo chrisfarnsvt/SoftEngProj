@@ -36,7 +36,7 @@ public class ScheduledSession implements Session{
 	/**
 	 * create a scheduled session
 	 */
-	public ScheduledSession(Boolean encrypt, Boolean compress, int interval) {
+	public ScheduledSession(Boolean encrypt, Boolean compress, int interval, Boolean newSess) {
 		_isEncrypted = encrypt;
 		_isCompressed = compress;
 		_files = new ArrayList<File>();
@@ -45,7 +45,10 @@ public class ScheduledSession implements Session{
 		_interval = interval;
 		_scheduledBackupTime = Calendar.getInstance();
 		_scheduledBackupTime.roll(Calendar.HOUR, _interval);
-		_sessionID = ++_sessionIDCount;
+		if(newSess)
+			_sessionID = ++_sessionIDCount;
+		else
+			_sessionID = _sessionIDCount;
 		_creationDate = Calendar.getInstance();
 		_lastModifiedDate = _creationDate;
 		_linkedSession = this;
@@ -481,7 +484,7 @@ public class ScheduledSession implements Session{
 	
 	public ScheduledSession executeScheduledBackup() {
 		
-		ScheduledSession newSession = new ScheduledSession(_isEncrypted, _isCompressed, _interval);
+		ScheduledSession newSession = new ScheduledSession(_isEncrypted, _isCompressed, _interval, false);
 		
 		if(!new File(_backupLocation + "/" + _sessionID + "v").isDirectory())
 		{

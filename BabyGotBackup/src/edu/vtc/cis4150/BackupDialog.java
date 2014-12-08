@@ -200,7 +200,7 @@ public class BackupDialog implements ActionListener{
 			 backupLocation.setEnabled(true);
 			 fileBtn2.setEnabled(true);
 			 lblBackupLocation.setEnabled(true);
-			 newSession = new ScheduledSession(false, false, 1);
+			 newSession = new ScheduledSession(false, false, 1, true);
 		 }
 		 if(e.getSource() == fileBtn1) {
 			 final JFileChooser fc = new JFileChooser();
