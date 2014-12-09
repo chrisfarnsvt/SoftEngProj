@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 import java.nio.file.Path;
+
 import jcifs.UniAddress;
 import jcifs.smb.*;
 
@@ -19,7 +20,7 @@ import jcifs.smb.*;
 public class SmbHandler
 {
     private UniAddress domain;
-    private String smbroot = "smb://rothbard/bgb/";
+    private String smbroot = "smb://ROTHBARD/bgb/";
     private NtlmPasswordAuthentication authentication;
 
     public SmbHandler(String address, String username, String password) throws Exception
@@ -129,7 +130,7 @@ public class SmbHandler
 	 */
 	public File getFile(Path target, File file) throws Exception
 	{
-		SmbFile sFile = new SmbFile(smbroot+file.getName(), authentication);
+		SmbFile sFile = new SmbFile(smbroot+file.getPath().toString().substring(5, file.getPath().toString().lastIndexOf(".")), getAuthentication());
         SmbFileInputStream sfis = new SmbFileInputStream(sFile);
         FileOutputStream fos = new FileOutputStream(target.toString());
 		byte[] b = new byte[32768];
