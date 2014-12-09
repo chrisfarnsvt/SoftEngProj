@@ -4,9 +4,6 @@
  */
 package edu.vtc.cis4150;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.security.spec.KeySpec;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,12 +15,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
-
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
-import javax.crypto.spec.SecretKeySpec;
 
 import jcifs.smb.SmbFile;
 
@@ -129,10 +120,10 @@ public class NetworkedSession implements Session{
 		if (_files.contains(file)) {
 			temp = new File(file.getPath());
 			if (_isEncrypted)
-				temp = encrypt(temp);
+				encrypt(temp);
 			if (_isCompressed)
-				temp = compress(temp);
-			_smbHandler.createFile(temp); 
+				compress(temp);
+			_smbHandler.createFile(file); 
 			SmbFile result = new SmbFile(_backupLocation + temp.getName());
 			_lastModifiedDate = new Date();
 			_backupToFile.put(result, file);
@@ -150,7 +141,7 @@ public class NetworkedSession implements Session{
 	public File compress(File file) {
 		byte[] buffer = new byte[1024];
 		try {
-		   FileOutputStream fos = new FileOutputStream(file.getPath() + ".zip");
+		   FileOutputStream fos = new FileOutputStream(_backupLocation + file.getPath() + ".zip");
 		    		ZipOutputStream zos = new ZipOutputStream(fos);
 		    		ZipEntry ze= new ZipEntry(file.getName());
 		    		zos.putNextEntry(ze);
@@ -163,7 +154,7 @@ public class NetworkedSession implements Session{
 		    		in.close();
 		    		zos.closeEntry();
 		    		zos.close();
-		    		return new File(file.getPath() + ".zip");
+		    		return file;
 		    	}
 		    	catch(IOException ex){
 		    	   ex.printStackTrace();
@@ -210,98 +201,11 @@ public class NetworkedSession implements Session{
 	 * Encrypts a file
 	 * @param file the file to encrypt
 	 * @return the encrypted file
-	 * @throws Exception 
 	 */
-	public File encrypt(File file) throws Exception {
-		
-		try{
-			FileInputStream inFile = new FileInputStream(file);
-			FileOutputStream outFile = new FileOutputStream(file.getName() + ".enc");
-			
-			byte[] salt = new byte [8];
-			SecureRandom secureRandom = new SecureRandom();
-			secureRandom.nextBytes(salt);
-			FileOutputStream saltOutFile = new FileOutputStream(file.getName() + ".salt.enc");
-			saltOutFile.write(salt);
-			saltOutFile.close();
-			
-			SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-			KeySpec keySpec = new PBEKeySpec(_pass.toCharArray(), salt, 65536, 128);
-			SecretKey secretKey = factory.generateSecret(keySpec);
-			SecretKey secret = new SecretKeySpec(secretKey.getEncoded(), "AES");
-			
-			Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding", "SunJCE");
-			cipher.init(Cipher.ENCRYPT_MODE, secret);
-			
-			byte[] input = new byte[64];
-			int bytesRead;
-			
-			while ((bytesRead = inFile.read(input)) != -1)
-			{
-				byte[] output = cipher.update(input, 0, bytesRead);
-				if (output != null)
-					outFile.write(output);
-			}
-			
-			byte[] output = cipher.doFinal();
-			if (output != null)
-				outFile.write(output);
-			
-			inFile.close();
-			outFile.flush();
-			outFile.close();
-			
-			return new File(file.getName() + ".enc");
-		}
-		
-		catch(IOException ex) {
-			ex.printStackTrace();
-			return null;
-		}
+	public File encrypt(File file) {
+		return null;
 	}
 	
-	public File decrypt(File file) throws Exception {
-		
-		try{
-			FileInputStream saltFis = new FileInputStream(file.getName() + "salt.enc");
-			byte[] salt = new byte[8];
-			saltFis.read(salt);
-			saltFis.close();
-	
-			SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-			KeySpec keySpec = new PBEKeySpec(_pass.toCharArray(), salt, 65536, 128);
-			SecretKey tmp = factory.generateSecret(keySpec);
-			SecretKey secret = new SecretKeySpec(tmp.getEncoded(), "AES");
-	
-			Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-			cipher.init(Cipher.DECRYPT_MODE, secret);
-			FileInputStream fis = new FileInputStream(file.getName() + ".enc");
-			FileOutputStream fos = new FileOutputStream(file.getName() + ".dec");
-			
-			byte[] in = new byte[64];
-			int read;
-			while ((read = fis.read(in)) != -1) {
-				byte[] output = cipher.update(in, 0, read);
-				if (output != null)
-					fos.write(output);
-			}
-	
-			byte[] output = cipher.doFinal();
-			if (output != null)
-				fos.write(output);
-			fis.close();
-			fos.flush();
-			fos.close();
-			
-			return new File(file.getName() + ".dec");
-		}
-		catch(IOException ex)
-		{
-			ex.printStackTrace();
-			return null;
-		}
-	}
-
 	/**
 	 * view the files added to the file ArrayList
 	 * @return the file ArrayList to be viewed
@@ -342,13 +246,14 @@ public class NetworkedSession implements Session{
 		SmbFile sFile = new SmbFile(_backupLocation+file.getPath().toString().substring(5, file.getPath().toString().lastIndexOf(".")), 
 								     _smbHandler.getAuthentication());
 		if (_backupToFile.containsKey(sFile)) {
-			File location = _backupToFile.get(sFile);	
+			File location = _backupToFile.get(sFile);
+			System.out.println("location set to: "+location.getPath());		
 			File temp = new File(file.getPath());
 			if (_isCompressed)
 				temp = decompress(temp);
 			if (_isEncrypted)
 				temp = decrypt(temp);
-			_smbHandler.getFile(location.toPath(), temp);
+			_smbHandler.getFile(location.toPath(), file);
 			_lastModifiedDate = new Date();
 			repOK();	
 		}
@@ -379,7 +284,7 @@ public class NetworkedSession implements Session{
 		assert (_lastModifiedDate != null);
 	}
 	
-	private static String _pass;
+
 	private ArrayList<File> _files; // never null, elements in ArrayList never null
 	private boolean _isEncrypted; //booleans can't be null in java
 	private boolean _isCompressed;
@@ -392,39 +297,45 @@ public class NetworkedSession implements Session{
 	
 	@Override
 	public boolean getCompressed() {
-	return _isCompressed;
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	@Override
 	public boolean getEncrypted() {
-		return _isEncrypted;
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 
 	@Override
 	public String getBackupDirectory() {
-		return _backupLocation;
+		// TODO Auto-generated method stub
+		return null;
 	}
-	
-	public void addBackupMapEntry(SmbFile backup, File source) {
-		_backupToFile.put(backup, source);
-	}
-
-	public void setCompressed(boolean selected) {
-		_isCompressed = selected;		
-	}
-
-	public void setEncrypted(boolean selected) {
-		_isEncrypted = selected;
+	public File decrypt(File file) throws Exception {
+		return file;
 	}
 
 	@Override
 	public void addBackupMapEntry(File backup, File source) {
-		// TODO Auto-generated method stub	
+		// TODO Auto-generated method stub
 	}
-	
+
 	@Override
 	public HashMap<File, File> getBackupToFileMap() {
+		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public void setCompressed(boolean selected) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void setEncrypted(boolean selected) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
