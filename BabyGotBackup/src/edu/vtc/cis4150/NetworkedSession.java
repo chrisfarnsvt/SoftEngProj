@@ -243,8 +243,6 @@ public class NetworkedSession implements Session{
 	}
 		
 	public void restoreFile(File file) throws Exception {
-		//This is a hacky fix, need to set authentication before calling restoreFile
-		setAuth("75.69.70.180", "bgb", "ilikebigbits");
 		SmbFile sFile = new SmbFile(_backupLocation+file.getPath().toString().substring(5, file.getPath().toString().lastIndexOf(".")), 
 								     _smbHandler.getAuthentication());
 		if (_backupToFile.containsKey(sFile)) {
