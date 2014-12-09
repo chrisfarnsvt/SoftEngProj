@@ -236,7 +236,7 @@ public class BackupDialog implements ActionListener{
 			backupFrm.dispose();
 		}
 		if(e.getSource() == manualRadio) {
-			lblUserName.setEnabled(false);
+			 lblUserName.setEnabled(false);
 			 lblPassword.setEnabled(false);
 			 username.setEnabled(false);
 			 password.setEnabled(false);
@@ -263,16 +263,21 @@ public class BackupDialog implements ActionListener{
 			 username.setEnabled(true);
 			 password.setEnabled(true);
 			 comboBox.setEnabled(false);
-
+			 backupLocation.setEnabled(true);
+			 fileBtn2.setEnabled(true);	
+			 lblBackupLocation.setEnabled(true);			
 			 newSession = new NetworkedSession(false, false);
+			 backupLocation.setText("smb://rothbard/bgb/");
+			 username.setText("bgb");
+			 password.setText("ilikebigbits");
 		 }
 		 if (e.getSource() == encryptCheck) {
 			 if (compressCheck.isSelected())
 			 	compressCheck.setSelected(false);
 			 }
-			 if (e.getSource() == compressCheck) {
-			 	if (encryptCheck.isSelected())
-			 		encryptCheck.setSelected(false);
+		 if (e.getSource() == compressCheck) {
+		   	 if (encryptCheck.isSelected())
+			 	encryptCheck.setSelected(false);
 			 }
 		 if(e.getSource() == fileBtn1) {
 			 final JFileChooser fc = new JFileChooser();
@@ -359,7 +364,7 @@ public class BackupDialog implements ActionListener{
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
-				}
+			}
 			else if (scheduleRadio.isSelected()){	
 				try {
 					newSession.addFile(new File(fileLocation.getText()));
@@ -367,20 +372,24 @@ public class BackupDialog implements ActionListener{
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
-				}
-			 if(sambaRadio.isSelected()) {
-				 try {
-					 ((NetworkedSession)newSession).setAuth("75.69.70.180", username.getText(), password.getText());
-					 if (new File(fileLocation.getText()).isDirectory()) {
-						 Collection<File> files = FileUtils.listFiles(new File(fileLocation.getText()), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
-						 for (File file : files) {
-							 if (!file.isDirectory()) {
-								 newSession.addFile(file);
-								 fileListModel.addElement(file.getPath());
-							 }
-						 }
-					 }
-				 } catch (Exception e1) {
+			}
+			else if(sambaRadio.isSelected()) {
+				try {
+					((NetworkedSession)newSession).setAuth("75.69.70.180", username.getText(), password.getText());					 
+					if (new File(fileLocation.getText()).isDirectory()) {
+						Collection<File> files = FileUtils.listFiles(new File(fileLocation.getText()), TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE);
+						for (File file : files) {
+							if (!file.isDirectory()) {
+								newSession.addFile(file);
+								fileListModel.addElement(file.getPath());
+							}
+						}
+					}
+					else{
+						newSession.addFile(new File(fileLocation.getText()));
+						fileListModel.addElement(fileLocation.getText());
+					}
+			  } catch (Exception e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
