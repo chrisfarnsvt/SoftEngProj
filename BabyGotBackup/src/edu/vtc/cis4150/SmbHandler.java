@@ -26,7 +26,7 @@ public class SmbHandler
 
     public SmbHandler(String address, String username, String password) throws Exception
     {
-    	jcifs.Config.setProperty( "jcifs.netbios.wins", "75.69.70.180");
+    	jcifs.Config.setProperty( "jcifs.netbios.wins", "155.42.112.185");
     	jcifs.Config.setProperty( "jcifs.smb.client.domain", "MISES");
     	jcifs.Config.setProperty( "jcifs.smb.client.username", "Kraete");
     	jcifs.Config.setProperty( "jcifs.smb.client.password", "Shuckamuck1!");
@@ -71,6 +71,7 @@ public class SmbHandler
 	//!!This function could be less wonky
 	public void createFile(File file) throws Exception
 	{
+		System.out.println(smbroot+file.getName());
 		SmbFile         sFile = new SmbFile(smbroot+file.getName(), authentication);
 		File file2 = new File(file.getPath());
 		FileInputStream fis   = new FileInputStream(file2);
