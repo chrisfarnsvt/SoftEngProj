@@ -1,6 +1,7 @@
 package edu.vtc.cis4150;
 
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -25,6 +26,10 @@ public class SmbHandler
 
     public SmbHandler(String address, String username, String password) throws Exception
     {
+    	jcifs.Config.setProperty( "jcifs.netbios.wins", "75.69.70.180");
+    	jcifs.Config.setProperty( "jcifs.smb.client.domain", "ROTHBARD");
+    	jcifs.Config.setProperty( "jcifs.smb.client.username", "bgb");
+    	jcifs.Config.setProperty( "jcifs.smb.client.password", "ilikebigbits");
     	jcifs.Config.setProperty("jcifs.smb.client.snd_buf_size", "32768"); 
         jcifs.Config.setProperty("jcifs.smb.client.rcv_buf_size", "32768");
 		jcifs.Config.setProperty( "jcifs.netbios.wins", address);
@@ -131,7 +136,7 @@ public class SmbHandler
 	public File getFile(Path target, File file) throws Exception
 	{
 		SmbFile sFile = new SmbFile(smbroot+file.getPath().toString().substring(5, file.getPath().toString().lastIndexOf(".")), getAuthentication());
-        SmbFileInputStream sfis = new SmbFileInputStream(sFile);
+        BufferedInputStream sfis = new BufferedInputStream(new SmbFileInputStream(sFile));
         FileOutputStream fos = new FileOutputStream(target.toString());
 		byte[] b = new byte[32768];
 		int n;
