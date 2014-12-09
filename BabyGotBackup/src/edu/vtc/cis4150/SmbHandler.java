@@ -21,15 +21,15 @@ import jcifs.smb.*;
 public class SmbHandler
 {
     private UniAddress domain;
-    private String smbroot = "smb://ROTHBARD/bgb/";
+    private String smbroot = "smb://MISES/smb/";
     private NtlmPasswordAuthentication authentication;
 
     public SmbHandler(String address, String username, String password) throws Exception
     {
     	jcifs.Config.setProperty( "jcifs.netbios.wins", "75.69.70.180");
-    	jcifs.Config.setProperty( "jcifs.smb.client.domain", "ROTHBARD");
-    	jcifs.Config.setProperty( "jcifs.smb.client.username", "bgb");
-    	jcifs.Config.setProperty( "jcifs.smb.client.password", "ilikebigbits");
+    	jcifs.Config.setProperty( "jcifs.smb.client.domain", "MISES");
+    	jcifs.Config.setProperty( "jcifs.smb.client.username", "Kraete");
+    	jcifs.Config.setProperty( "jcifs.smb.client.password", "Shuckamuck1!");
     	jcifs.Config.setProperty("jcifs.smb.client.snd_buf_size", "32768"); 
         jcifs.Config.setProperty("jcifs.smb.client.rcv_buf_size", "32768");
 		jcifs.Config.setProperty( "jcifs.netbios.wins", address);
