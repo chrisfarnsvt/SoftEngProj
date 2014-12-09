@@ -243,10 +243,13 @@ public class NetworkedSession implements Session{
 	}
 		
 	public void restoreFile(File file) throws Exception {
-		SmbFile sFile = new SmbFile(_backupLocation+file.getName());
+		//This is a hacky fix, need to set authentication before calling restoreFile
+		setAuth("75.69.70.180", "bgb", "ilikebigbits");
+		SmbFile sFile = new SmbFile(_backupLocation+file.getPath().toString().substring(5, file.getPath().toString().lastIndexOf(".")));
+		System.out.println("sFile at: "+sFile.getPath());
 		if (_backupToFile.containsKey(sFile)) {
 			File location = _backupToFile.get(sFile);
-		if (_files.contains(file)) {
+			System.out.println("location set to: "+location.getPath());		
 			File temp = new File(file.getPath());
 			if (_isCompressed)
 				temp = decompress(temp);
@@ -254,8 +257,7 @@ public class NetworkedSession implements Session{
 				temp = decrypt(temp);
 			_smbHandler.getFile(location.toPath(), file);
 			_lastModifiedDate = new Date();
-			repOK();
-		}
+			repOK();	
 		}
 	}
 
