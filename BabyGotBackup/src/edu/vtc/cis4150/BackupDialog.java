@@ -267,9 +267,9 @@ public class BackupDialog implements ActionListener{
 			 fileBtn2.setEnabled(true);	
 			 lblBackupLocation.setEnabled(true);			
 			 newSession = new NetworkedSession(false, false);
-			 backupLocation.setText("smb://rothbard/bgb/");
-			 username.setText("bgb");
-			 password.setText("ilikebigbits");
+			 backupLocation.setText("smb://MISES/smb");
+			 username.setText("Kraete");
+			 password.setText("Shuckamuck1!");
 		 }
 		 if (e.getSource() == encryptCheck) {
 			 if (compressCheck.isSelected())
